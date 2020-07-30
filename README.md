@@ -31,4 +31,12 @@ https://120byte.booth.pm/items/2195473
 [TriLib](https://assetstore.unity.com/packages/tools/modeling/trilib-model-loader-package-91777?locale=ja-JP)  
 [UnityWindowsFileDrag&Drop](https://github.com/Bunny83/UnityWindowsFileDrag-Drop)  
 [VRMLoaderUI](https://github.com/m2wasabi/VRMLoaderUI)  
-[VRoidSDK](https://developer.vroid.com/)  
+[VRoidSDK](https://developer.vroid.com/)
+
+## その他
+アイコン画像や効果音も除外しています。
+
+## 言い訳
+元々公開しないつもりだったので中身が酷いです。  
+2回ほど公開しないのか？的なことを外人ニキに聞かれたので、  
+差分管理が辛くなってきたし、バージョン管理ついでに公開します。
