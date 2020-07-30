@@ -58,3 +58,47 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# my set
+_debug/
+_exe/
+Background/
+Photo/
+Pose/
+Twitter
+VRM_DollPlayPCver.lnk
+
+# Assets
+Assets/_TerrainAutoUpgrade/
+Assets/_TerrainAutoUpgrade.meta
+Assets/Battlehub/
+Assets/Battlehub.meta
+Assets/Icon/
+Assets/Icon.meta
+Assets/Let's Tweet/
+Assets/Let's Tweet.meta
+Assets/Plugins/
+Assets/Plugins.meta
+Assets/StandaloneFileBrowser/
+Assets/StandaloneFileBrowser.meta
+Assets/StreamingAssets/
+Assets/StreamingAssets.meta
+Assets/TriLib/
+Assets/TriLib.meta
+Assets/UnityWindowsFileDrag&Drop/
+Assets/UnityWindowsFileDrag&Drop.meta
+Assets/VRMLoaderUI/
+Assets/VRMLoaderUI.meta
+Assets/VRoidSDK/
+Assets/VRoidSDK.meta
+
+# Sound
+Assets/camera-shutter2.mp3
+Assets/camera-shutter2.mp3.meta
+
+# Image
+Assets/Icon/
+Assets/Icon.meta
+
+# HIMITU
+Assets/Script/AESCryption.cs
+Assets/Script/AESCryption.cs.meta
