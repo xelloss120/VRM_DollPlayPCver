@@ -3,7 +3,7 @@ VRMでお人形遊びするやつのPC版
 
 ## 見る所
 私が書いた部分は以下にまとめてます。  
-～あとで～
+https://github.com/xelloss120/VRM_DollPlayPCver/tree/master/Assets/Script
 
 ## 使い方
 https://docs.google.com/presentation/d/1WRol9mT7jh9rw1KqK9kF3JpmW1qVh9cYcNg5dYzCH0w/edit?usp=sharing
