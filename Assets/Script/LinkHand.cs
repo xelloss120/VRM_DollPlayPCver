@@ -33,13 +33,13 @@ public class LinkHand : MonoBehaviour
     Vector3 LeftFingerAngle = new Vector3(0, 0, 80);
     Vector3 LeftFingerAngleI = new Vector3(0, 0, -5);
     Vector3 LeftFingerAngleM = new Vector3(0, 0, -5);
-    Vector3 LeftFingerAngleT = new Vector3(60, -10, 10);
+    Vector3 LeftFingerAngleT = new Vector3(30, -30, 0);
     Vector3 LeftFingerAngleP = new Vector3(0, 10, 0);
 
     Vector3 RightFingerAngle = new Vector3(0, 0, -80);
     Vector3 RightFingerAngleI = new Vector3(0, 0, 5);
     Vector3 RightFingerAngleM = new Vector3(0, 0, 5);
-    Vector3 RightFingerAngleT = new Vector3(60, 10, -10);
+    Vector3 RightFingerAngleT = new Vector3(30, 30, 0);
     Vector3 RightFingerAngleP = new Vector3(0, -10, 0);
 
     void Update()
