@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
 using Battlehub.RTHandles;
 
 public class LinkColor : MonoBehaviour
@@ -8,6 +9,7 @@ public class LinkColor : MonoBehaviour
 
     [SerializeField] GameObject UI;
 
+    [SerializeField] Toggle Shadow;
     [SerializeField] Slider EmissionR;
     [SerializeField] Slider EmissionG;
     [SerializeField] Slider EmissionB;
@@ -17,6 +19,7 @@ public class LinkColor : MonoBehaviour
     [SerializeField] Slider Alpha;
 
     GameObject PreActive;
+    MeshRenderer Mesh;
     Material Mat;
 
     void Update()
@@ -30,6 +33,7 @@ public class LinkColor : MonoBehaviour
             // 選択切り替え時の条件初期化
             PreActive = active;
             UI.SetActive(false);
+            Mesh = null;
             Mat = null;
 
             var image = active.transform.root.GetComponent<ImageFile>();
@@ -39,6 +43,10 @@ public class LinkColor : MonoBehaviour
                 // UIの有効化
                 UI.SetActive(true);
                 Mat = renderer.material;
+
+                // 影有無の設定
+                Mesh = active.transform.root.GetComponent<MeshRenderer>();
+                Shadow.isOn = Mesh.receiveShadows;
 
                 // Emissionの取得とスライダーへの設定
                 Emission = Mat.GetColor("_EmissionColor");
@@ -54,8 +62,13 @@ public class LinkColor : MonoBehaviour
                 Alpha.value = LitColor.a;
             }
         }
-        else if (Mat != null)
+        else if (Mat != null && Mesh != null)
         {
+            // 影有無の設定
+            Mesh.receiveShadows = Shadow.isOn;
+            Mesh.shadowCastingMode = Shadow.isOn ? ShadowCastingMode.On : ShadowCastingMode.Off;
+            Mat.renderQueue = Shadow.isOn ? (int)RenderQueue.AlphaTest : (int)RenderQueue.Transparent;
+
             // Emissionの操作
             Emission.r = EmissionR.value;
             Emission.g = EmissionG.value;

@@ -561,6 +561,8 @@ public class LoadFile : MonoBehaviour
                 markerM.name = "TriLib_Root";
                 markerM.position = new Vector3(0, -1, 0);
                 loadedGameObject.transform.parent = markerM;
+
+                DandD.SetActive(false);
             }
             catch (Exception e)
             {
