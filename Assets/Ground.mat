@@ -85,6 +85,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AlphaToMask: 0
     - _BlendMode: 0
     - _BumpScale: 1
     - _CullMode: 2
@@ -97,7 +98,7 @@ Material:
     - _GlossyReflections: 1
     - _IndirectLightIntensity: 0.1
     - _LightColorAttenuation: 0
-    - _MToonVersion: 32
+    - _MToonVersion: 35
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1

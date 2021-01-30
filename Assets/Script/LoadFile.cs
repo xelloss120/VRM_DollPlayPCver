@@ -23,12 +23,18 @@ public class LoadFile : MonoBehaviour
     [SerializeField] GameObject Photo;
     [SerializeField] GameObject DandD;
     [SerializeField] SelectVRM SelectVRM;
+    [SerializeField] GameObject Camera;
+    [SerializeField] GameObject Light;
 
     List<HumanBodyBones> PrimalBones;
     UnityDragAndDropHook hook;
     AssetBundle AssetBundle;
 
     GameObject Background;
+
+    int LoadCount = 0;
+    int LoadCountMax = -1;
+    string SceneText;
 
     void OnEnable()
     {
@@ -120,6 +126,33 @@ public class LoadFile : MonoBehaviour
             DestroyJointAndRigid();
             SetRagDoll();
         }
+        if (LoadCountMax == LoadCount)
+        {
+            LoadCount = 0;
+            LoadCountMax = -1;
+
+            var line = SceneText.Split('\n');
+            var objects = Array.FindAll(FindObjectsOfType<GameObject>(), (item) => item.transform.parent == null);
+            for (int i = 0; i < line.Length; i++)
+            {
+                var lineCSV = line[i].Split(',');
+                var item = lineCSV[0];
+                if (item != "" && item != "Camera" && item != "Light")
+                {
+                    foreach (var obj in objects)
+                    {
+                        var saveSceneTarget = obj.GetComponent<SaveSceneTarget>();
+                        if (saveSceneTarget != null && saveSceneTarget.Path == item)
+                        {
+                            obj.transform.position = GetVector3(lineCSV, 1);
+                            obj.transform.eulerAngles = GetVector3(lineCSV, 4);
+                            obj.transform.localScale = GetVector3(lineCSV, 7);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void GLB_TEST()
@@ -162,7 +195,7 @@ public class LoadFile : MonoBehaviour
         var ui = modal.GetComponentInChildren<VRMPreviewUI>();
         ui.setMeta(meta);
         ui.setLoadable(true);
-        ui.m_ok.onClick.AddListener(() => LoadAsync(context));
+        ui.m_ok.onClick.AddListener(() => LoadAsync(context, path));
     }
 
     void GLB(string path)
@@ -177,30 +210,34 @@ public class LoadFile : MonoBehaviour
             var markerM = Instantiate(MarkerM).transform;
             markerM.name = "GLB_Root";
             markerM.position = new Vector3(0, -1, 0);
+            markerM.gameObject.AddComponent<SaveSceneTarget>().Path = path;
             context.Root.transform.parent = markerM;
+
+            LoadCount++;
         });
 
         DandD.SetActive(false);
     }
 
-    void LoadAsync(VRMImporterContext context)
+    void LoadAsync(VRMImporterContext context, string path)
     {
         var now = Time.time;
         context.LoadAsync(() =>
         {
             var delta = Time.time - now;
             Debug.LogFormat("LoadAsync {0:0.0} seconds", delta);
-            OnLoaded(context);
+            OnLoaded(context, path);
         });
     }
 
-    void OnLoaded(VRMImporterContext context)
+    void OnLoaded(VRMImporterContext context, string path)
     {
         context.ShowMeshes();
-        SetVRM(context.Root);
+        SetVRM(context.Root, path);
+        LoadCount++;
     }
 
-    public void SetVRM(GameObject root)
+    public void SetVRM(GameObject root, string path)
     {
         root.transform.position = new Vector3(0, -1, 0);
 
@@ -209,6 +246,7 @@ public class LoadFile : MonoBehaviour
         markerR.name = "Root";
         markerR.position = root.transform.position;
         markerR.GetComponent<Marker>().List = new List<Transform>();
+        markerR.gameObject.AddComponent<SaveSceneTarget>().Path = path;
         root.transform.parent = markerR;
 
         // 関節
@@ -438,18 +476,21 @@ public class LoadFile : MonoBehaviour
         var obj = Instantiate(Photo);
         obj.GetComponent<Renderer>().material.SetTexture("_MainTex", tex);
         obj.GetComponent<Renderer>().material.SetTexture("_ShadeTexture", tex);
-        obj.transform.position = Vector3.zero;
+        obj.transform.position = new Vector3(0, 0, -1);
         obj.transform.eulerAngles = new Vector3(90, 0, 0);
+        obj.gameObject.AddComponent<SaveSceneTarget>().Path = path;
 
         // アス比
         var scale = obj.transform.localScale;
         scale.z *= (float)tex.height / tex.width;
-        obj.transform.localScale = scale;
+        obj.transform.localScale = scale * 5;
 
         // Twitter投稿用パス保持
         obj.GetComponent<ImageFile>().Path = path;
 
         DandD.SetActive(false);
+
+        LoadCount++;
 
         return obj;
     }
@@ -513,18 +554,61 @@ public class LoadFile : MonoBehaviour
 
     void TXT(string path)
     {
+        var txt = File.ReadAllText(path);
+        var line = txt.Split('\n');
+        var csv = line[0].Split(',');
+
+        if (csv.Length == 10)
+        {
+            // シーン読込
+            LoadCount = 0;
+            LoadCountMax = 0;
+            SceneText = txt;
+
+            for (int i = 0; i < line.Length; i++)
+            {
+                var lineCSV = line[i].Split(',');
+                var item = lineCSV[0];
+                if (item != "" && item != "Camera" && item != "Light")
+                {
+                    var file = new List<string>();
+                    file.Add(item);
+                    OnFiles(file, new POINT(0, 0));
+
+                    LoadCountMax++;
+                }
+                else if (item == "Camera")
+                {
+                    Camera.transform.position = GetVector3(lineCSV, 1);
+                    Camera.transform.eulerAngles = GetVector3(lineCSV, 4);
+
+                    // カメラ位置と回転だけ適用しても操作すると実行時の前回位置に釣られるのでこちらも必要
+                    var orbit = Camera.GetComponent<Battlehub.RTCommon.MouseOrbit>();
+                    orbit.Target.position = GetVector3(lineCSV, 10);
+                    orbit.SyncAngles();
+                    orbit.Distance = (orbit.Target.transform.position - Camera.transform.position).magnitude;
+                }
+                else if (item == "Light")
+                {
+                    Light.transform.position = GetVector3(lineCSV, 1);
+                    Light.transform.eulerAngles = GetVector3(lineCSV, 4);
+                }
+            }
+
+            return;
+        }
+
         if (!SelectVRM.IsActive)
         {
             return;
         }
 
-        string txt = File.ReadAllText(path).Replace("\n", ",");
-        string[] pose = txt.Split(',');
+        string[] pose = txt.Replace("\n", ",").Split(',');
 
         for (int i = 0; i < SelectVRM.Marker.List.Count; i++)
         {
             // (0,0,0)は角度を設定しないように（指など一部だけの適用を想定）
-            var vec3 = GetVector3(pose, i);
+            var vec3 = GetVector3(pose, i * 3);
             var angle = SelectVRM.Marker.List[i].localEulerAngles;
             angle = vec3 != Vector3.zero ? vec3 : angle;
             SelectVRM.Marker.List[i].localEulerAngles = angle;
@@ -533,7 +617,6 @@ public class LoadFile : MonoBehaviour
 
     Vector3 GetVector3(string[] pose, int index)
     {
-        index *= 3;
         if (pose.Length <= index + 1) return Vector3.zero; // 最後の改行があるので+1して値有無を確認
         float x = float.Parse(pose[index + 0]);
         float y = float.Parse(pose[index + 1]);
@@ -560,9 +643,12 @@ public class LoadFile : MonoBehaviour
                 var markerM = Instantiate(MarkerM).transform;
                 markerM.name = "TriLib_Root";
                 markerM.position = new Vector3(0, -1, 0);
+                markerM.gameObject.AddComponent<SaveSceneTarget>().Path = path;
                 loadedGameObject.transform.parent = markerM;
 
                 DandD.SetActive(false);
+
+                LoadCount++;
             }
             catch (Exception e)
             {
@@ -586,8 +672,6 @@ public class LoadFile : MonoBehaviour
         Array.Copy(bgs_jpg, bgs, bgs_jpg.Length);
         Array.Copy(bgs_png, 0, bgs, bgs_jpg.Length, bgs_png.Length);
         Background = IMG(bgs[UnityEngine.Random.Range(0, bgs.Length)]);
-        Background.transform.position = new Vector3(0, 0, -1);
-        Background.transform.localScale *= 5;
 
         // ポーズをランダム設定
         string[] poses = Directory.GetFiles(@"Pose\", "*.png");

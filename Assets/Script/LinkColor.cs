@@ -9,7 +9,10 @@ public class LinkColor : MonoBehaviour
 
     [SerializeField] GameObject UI;
 
-    [SerializeField] Toggle Shadow;
+    [SerializeField] Toggle ShadowT;
+    [SerializeField] Slider ShadowR;
+    [SerializeField] Slider ShadowG;
+    [SerializeField] Slider ShadowB;
     [SerializeField] Slider EmissionR;
     [SerializeField] Slider EmissionG;
     [SerializeField] Slider EmissionB;
@@ -24,6 +27,7 @@ public class LinkColor : MonoBehaviour
 
     void Update()
     {
+        Color Shadow;
         Color Emission;
         Color LitColor;
 
@@ -46,7 +50,13 @@ public class LinkColor : MonoBehaviour
 
                 // 影有無の設定
                 Mesh = active.transform.root.GetComponent<MeshRenderer>();
-                Shadow.isOn = Mesh.receiveShadows;
+                ShadowT.isOn = Mesh.receiveShadows;
+
+                // Shadowの取得とスライダーへの設定
+                Shadow = Mat.GetColor("_ShadeColor");
+                ShadowR.value = Shadow.r;
+                ShadowG.value = Shadow.g;
+                ShadowB.value = Shadow.b;
 
                 // Emissionの取得とスライダーへの設定
                 Emission = Mat.GetColor("_EmissionColor");
@@ -65,9 +75,16 @@ public class LinkColor : MonoBehaviour
         else if (Mat != null && Mesh != null)
         {
             // 影有無の設定
-            Mesh.receiveShadows = Shadow.isOn;
-            Mesh.shadowCastingMode = Shadow.isOn ? ShadowCastingMode.On : ShadowCastingMode.Off;
-            Mat.renderQueue = Shadow.isOn ? (int)RenderQueue.AlphaTest : (int)RenderQueue.Transparent;
+            Mesh.receiveShadows = ShadowT.isOn;
+            Mesh.shadowCastingMode = ShadowT.isOn ? ShadowCastingMode.On : ShadowCastingMode.Off;
+            Mat.renderQueue = ShadowT.isOn ? (int)RenderQueue.AlphaTest : (int)RenderQueue.Transparent;
+
+            // ShadeColorの操作
+            Shadow.r = ShadowR.value;
+            Shadow.g = ShadowG.value;
+            Shadow.b = ShadowB.value;
+            Shadow.a = 1;
+            Mat.SetColor("_ShadeColor", Shadow);
 
             // Emissionの操作
             Emission.r = EmissionR.value;
@@ -82,13 +99,6 @@ public class LinkColor : MonoBehaviour
             LitColor.b = LitColorB.value;
             LitColor.a = Alpha.value;
             Mat.SetColor("_Color", LitColor);
-
-            // ShadeColorの操作
-            Color32 color = LitColor;
-            color.r = (byte)Mathf.Max(0, color.r - 0x2F);
-            color.g = (byte)Mathf.Max(0, color.g - 0x1F);
-            color.b = (byte)Mathf.Max(0, color.b - 0x0F);
-            Mat.SetColor("_ShadeColor", color);
         }
     }
 }

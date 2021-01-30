@@ -90,6 +90,10 @@ Assets/VRMLoaderUI/
 Assets/VRMLoaderUI.meta
 Assets/VRoidSDK/
 Assets/VRoidSDK.meta
+Assets/UniGLTF/
+Assets/VRM/
+Assets/VRMShaders/
+Assets/VRM.Samples/
 
 # Sound
 Assets/camera-shutter2.mp3
