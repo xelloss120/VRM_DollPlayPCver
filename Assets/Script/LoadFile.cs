@@ -585,7 +585,7 @@ public class LoadFile : MonoBehaviour
                     // カメラ位置と回転だけ適用しても操作すると実行時の前回位置に釣られるのでこちらも必要
                     var orbit = Camera.GetComponent<Battlehub.RTCommon.MouseOrbit>();
                     orbit.Target.position = GetVector3(lineCSV, 10);
-                    orbit.SyncAngles();
+                    //orbit.SyncAngles();
                     orbit.Distance = (orbit.Target.transform.position - Camera.transform.position).magnitude;
                 }
                 else if (item == "Light")

@@ -23,7 +23,7 @@ https://120byte.booth.pm/items/1654585
 使用しているアセットを除外しているため、cloneしただけではビルドできません。
 
 ## 使用しているアセット一覧
-[Runtime Transform Handles](https://assetstore.unity.com/packages/tools/modeling/runtime-transform-handles-65363)たぶん2.04  
+[Runtime Transform Handles](https://assetstore.unity.com/packages/tools/modeling/runtime-transform-handles-65363)たぶん3.5.0  
 [Let's Tweet In Unity](https://assetstore.unity.com/packages/tools/integration/let-s-tweet-in-unity-536)たぶん1.1  
 [Final IK](https://assetstore.unity.com/packages/tools/animation/final-ik-14290)1.9  
 [PuppetMaster](https://assetstore.unity.com/packages/tools/physics/puppetmaster-48977)0.9  
