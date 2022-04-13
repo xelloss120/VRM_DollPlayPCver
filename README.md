@@ -25,8 +25,8 @@ https://120byte.booth.pm/items/1654585
 ## 使用しているアセット一覧
 [Runtime Transform Handles](https://assetstore.unity.com/packages/tools/modeling/runtime-transform-handles-65363)たぶん3.5.0  
 [Let's Tweet In Unity](https://assetstore.unity.com/packages/tools/integration/let-s-tweet-in-unity-536)たぶん1.1  
-[Final IK](https://assetstore.unity.com/packages/tools/animation/final-ik-14290)1.9  
-[PuppetMaster](https://assetstore.unity.com/packages/tools/physics/puppetmaster-48977)0.9  
+[Final IK](https://assetstore.unity.com/packages/tools/animation/final-ik-14290)2.1  
+[PuppetMaster](https://assetstore.unity.com/packages/tools/physics/puppetmaster-48977)1.1  
 [UnityStandaloneFileBrowser](https://github.com/gkngkc/UnityStandaloneFileBrowser)たぶん1.2  
 [TriLib](https://assetstore.unity.com/packages/tools/modeling/trilib-model-loader-package-91777?locale=ja-JP)1.9.0b  
 [UnityWindowsFileDrag&Drop](https://github.com/Bunny83/UnityWindowsFileDrag-Drop)???  
