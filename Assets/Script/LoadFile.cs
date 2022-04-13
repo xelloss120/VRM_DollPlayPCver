@@ -27,7 +27,6 @@ public class LoadFile : MonoBehaviour
     [SerializeField] GameObject Light;
 
     List<HumanBodyBones> PrimalBones;
-    UnityDragAndDropHook hook;
     AssetBundle AssetBundle;
 
     GameObject Background;
@@ -38,14 +37,13 @@ public class LoadFile : MonoBehaviour
 
     void OnEnable()
     {
-        hook = new UnityDragAndDropHook();
-        hook.InstallHook();
-        hook.OnDroppedFiles += OnFiles;
+        UnityDragAndDropHook.InstallHook();
+        UnityDragAndDropHook.OnDroppedFiles += OnFiles;
     }
 
     void OnDisable()
     {
-        hook.UninstallHook();
+        UnityDragAndDropHook.UninstallHook();
     }
 
     void OnFiles(List<string> aFiles, POINT aPos)
