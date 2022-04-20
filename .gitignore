@@ -106,3 +106,5 @@ Assets/Icon.meta
 # HIMITU
 Assets/Script/AESCryption.cs
 Assets/Script/AESCryption.cs.meta
+Assets/Resources/credential.json.bytes
+Assets/Resources/credential.json.bytes.meta

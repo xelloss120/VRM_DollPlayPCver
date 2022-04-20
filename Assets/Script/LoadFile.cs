@@ -101,12 +101,12 @@ public class LoadFile : MonoBehaviour
         PrimalBones.Add(HumanBodyBones.RightFoot);
 
 #if UNITY_EDITOR
-        //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\AoUni.vrm");
+        VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\AoUni.vrm");
         //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\old\AliciaSolid.vrm");
         //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\AoUniJacket.vrm");
         //IMG(@"D:\play\UnityProject\VRM_DollPlayPCprot\Photo\20191019072142.jpg");
-        //GLB(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\GLB\page-induction-coil-150k-4096.glb");
-        VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\Oroka2.vrm");
+        //GLB(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\GLB\Cube.glb");
+        //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\Oroka2.vrm");
         //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\AoLinz.vrm");
 #endif
     }
@@ -184,54 +184,51 @@ public class LoadFile : MonoBehaviour
 
     void VRM(string path)
     {
-        var bytes = File.ReadAllBytes(path);
-        var context = new VRMImporterContext();
-        context.ParseGlb(bytes);
-
-        var meta = context.ReadMeta(true);
-        var modal = Instantiate(LoadConfirmModal, Canvas.transform) as GameObject;
-        var ui = modal.GetComponentInChildren<VRMPreviewUI>();
-        ui.setMeta(meta);
-        ui.setLoadable(true);
-        ui.m_ok.onClick.AddListener(() => LoadAsync(context, path));
+        var data = new AutoGltfFileParser(path).Parse();
+        var vrm = new VRMData(data);
+        IMaterialDescriptorGenerator materialGen = default;
+        using (var loader = new VRMImporterContext(vrm, materialGenerator: materialGen))
+        {
+            var meta = loader.ReadMeta(true);
+            var modal = Instantiate(LoadConfirmModal, Canvas.transform);
+            var ui = modal.GetComponentInChildren<VRMPreviewUI>();
+            ui.setMeta(meta);
+            ui.setLoadable(true);
+            ui.m_ok.onClick.AddListener(() => LoadAsync(loader, path));
+        }
     }
 
     void GLB(string path)
     {
-        var bytes = File.ReadAllBytes(path);
-        var context = new ImporterContext();
-        context.ParseGlb(bytes);
-        context.LoadAsync(() =>
+        var data = new AutoGltfFileParser(path).Parse();
+        IMaterialDescriptorGenerator materialGen = default;
+        using (var loader = new ImporterContext(data, materialGenerator: materialGen))
         {
-            context.ShowMeshes();
-
             var markerM = Instantiate(MarkerM).transform;
             markerM.name = "GLB_Root";
             markerM.position = new Vector3(0, -1, 0);
             markerM.gameObject.AddComponent<SaveSceneTarget>().Path = path;
-            context.Root.transform.parent = markerM;
+
+            var instance = loader.Load();
+            instance.Root.transform.parent = markerM;
+            instance.ShowMeshes();
 
             LoadCount++;
-        });
+        }
 
         DandD.SetActive(false);
     }
 
     void LoadAsync(VRMImporterContext context, string path)
     {
-        var now = Time.time;
-        context.LoadAsync(() =>
-        {
-            var delta = Time.time - now;
-            Debug.LogFormat("LoadAsync {0:0.0} seconds", delta);
-            OnLoaded(context, path);
-        });
+        var instance = context.Load();
+        OnLoaded(instance, path);
     }
 
-    void OnLoaded(VRMImporterContext context, string path)
+    void OnLoaded(RuntimeGltfInstance instance, string path)
     {
-        context.ShowMeshes();
-        SetVRM(context.Root, path);
+        instance.ShowMeshes();
+        SetVRM(instance.Root, path);
         LoadCount++;
     }
 
