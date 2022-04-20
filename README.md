@@ -31,7 +31,7 @@ https://120byte.booth.pm/items/1654585
 [TriLib](https://assetstore.unity.com/packages/tools/modeling/trilib-model-loader-package-91777?locale=ja-JP)1.9.0b  
 [UnityWindowsFileDrag&Drop](https://github.com/Bunny83/UnityWindowsFileDrag-Drop)???  
 [VRMLoaderUI](https://github.com/m2wasabi/VRMLoaderUI)0.3  
-[VRoidSDK](https://developer.vroid.com/)???  
+[VRoidSDK](https://developer.vroid.com/)0.1.0  
 ※末尾はバージョン
 
 ## その他
