@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using UnityEngine;
-using SFB;
+using TriLibCore.SFB;
 
 public class SavePoseTXT : MonoBehaviour
 {
@@ -13,8 +13,8 @@ public class SavePoseTXT : MonoBehaviour
             return;
         }
 
-        var path = StandaloneFileBrowser.SaveFilePanel("Save Pose TXT", "", "pose", "txt");
-        if (string.IsNullOrEmpty(path))
+        var item = StandaloneFileBrowser.SaveFilePanel("Save Pose TXT", "", "pose.txt", "txt");
+        if (string.IsNullOrEmpty(item.Name))
         {
             return;
         }
@@ -33,7 +33,7 @@ public class SavePoseTXT : MonoBehaviour
             }
         }
 
-        File.WriteAllText(path, pose);
+        File.WriteAllText(item.Name, pose);
     }
 
     string GetAngleString(Vector3 angle)

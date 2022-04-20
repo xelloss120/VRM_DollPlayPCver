@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using UnityEngine;
-using SFB;
+using TriLibCore.SFB;
 
 public class SaveScene : MonoBehaviour
 {
@@ -9,8 +9,8 @@ public class SaveScene : MonoBehaviour
 
     public void Save()
     {
-        var savePath = StandaloneFileBrowser.SaveFilePanel("Save Scene TXT", "", "scene", "txt");
-        if (string.IsNullOrEmpty(savePath))
+        var saveItem = StandaloneFileBrowser.SaveFilePanel("Save Scene TXT", "", "scene.txt", "txt");
+        if (string.IsNullOrEmpty(saveItem.Name))
         {
             return;
         }
@@ -38,6 +38,6 @@ public class SaveScene : MonoBehaviour
             }
         }
 
-        File.WriteAllText(savePath, csv);
+        File.WriteAllText(saveItem.Name, csv);
     }
 }

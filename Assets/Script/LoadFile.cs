@@ -6,7 +6,7 @@ using UniGLTF;
 using VRM;
 using VRMLoader;
 using B83.Win32;
-using TriLib;
+using TriLibCore;
 using RootMotion.FinalIK;
 using RootMotion.Dynamics;
 
@@ -108,6 +108,7 @@ public class LoadFile : MonoBehaviour
         //GLB(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\GLB\Cube.glb");
         //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\Oroka2.vrm");
         //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\AoLinz.vrm");
+        //TriLib(@"D:\play\Model\Reeva_v1.0.5\Models\Model_scooter.fbx");
 #endif
     }
 
@@ -622,34 +623,26 @@ public class LoadFile : MonoBehaviour
 
     void TriLib(string path)
     {
-        using (var assetLoader = new AssetLoader())
-        {
-            try
-            {
-                var assetLoaderOptions = AssetLoaderOptions.CreateInstance();
-                assetLoaderOptions.RotationAngles = new Vector3(0, 180, 0);
-                assetLoaderOptions.AutoPlayAnimations = true;
-                assetLoaderOptions.UseOriginalPositionRotationAndScale = true;
+        var assetLoaderOptions = AssetLoader.CreateDefaultLoaderOptions();
+        AssetLoader.LoadModelFromFile(path, null, OnMaterialsLoad, null, null, null, assetLoaderOptions);
+        TriLibPath = path;
+    }
 
-                var loadedGameObject = assetLoader.LoadFromFile(path, assetLoaderOptions);
-                loadedGameObject.transform.position = new Vector3(0, -1, 0);
-                loadedGameObject.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+    string TriLibPath = ""; // ゆるせ、ゆるせ……
 
-                var markerM = Instantiate(MarkerM).transform;
-                markerM.name = "TriLib_Root";
-                markerM.position = new Vector3(0, -1, 0);
-                markerM.gameObject.AddComponent<SaveSceneTarget>().Path = path;
-                loadedGameObject.transform.parent = markerM;
+    private void OnMaterialsLoad(AssetLoaderContext assetLoaderContext)
+    {
+        assetLoaderContext.RootGameObject.SetActive(true);
 
-                DandD.SetActive(false);
+        var markerM = Instantiate(MarkerM).transform;
+        markerM.name = "TriLib_Root";
+        markerM.position = new Vector3(0, -1, 0);
+        markerM.gameObject.AddComponent<SaveSceneTarget>().Path = TriLibPath;
+        assetLoaderContext.RootGameObject.transform.parent = markerM;
 
-                LoadCount++;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e.ToString());
-            }
-        }
+        DandD.SetActive(false);
+
+        LoadCount++;
     }
 
     public void Shuffle()

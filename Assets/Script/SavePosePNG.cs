@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using UnityEngine;
-using SFB;
+using TriLibCore.SFB;
 
 public class SavePosePNG : MonoBehaviour
 {
@@ -15,8 +15,8 @@ public class SavePosePNG : MonoBehaviour
             return;
         }
 
-        var path = StandaloneFileBrowser.SaveFilePanel("Save Pose PNG", "", "pose", "png");
-        if (string.IsNullOrEmpty(path))
+        var item = StandaloneFileBrowser.SaveFilePanel("Save Pose PNG", "", "pose.png", "png");
+        if (string.IsNullOrEmpty(item.Name))
         {
             return;
         }
@@ -91,7 +91,7 @@ public class SavePosePNG : MonoBehaviour
         tex.SetPixels(color);
         tex.Apply();
 
-        File.WriteAllBytes(path, tex.EncodeToPNG());
+        File.WriteAllBytes(item.Name, tex.EncodeToPNG());
     }
 
     Color GetColor(float value)
