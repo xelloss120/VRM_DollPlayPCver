@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using TriLibCore.SFB;
 
 public class Photo : MonoBehaviour
 {
@@ -32,17 +33,37 @@ public class Photo : MonoBehaviour
 
         if (JPG.isOn)
         {
-            string path = "Photo\\" + name + ".jpg";
-            File.WriteAllBytes(path, tex.EncodeToJPG());
-            //LoadFile.IMG(path);
+            var path = GetPath(name, "jpg");
+            if (path != "")
+            {
+                File.WriteAllBytes(path, tex.EncodeToJPG());
+                SE.Play();
+            }
         }
         if (PNG.isOn)
         {
-            string path = "Photo\\" + name + ".png";
-            File.WriteAllBytes(path, tex.EncodeToPNG());
-            //LoadFile.IMG(path);
+            var path = GetPath(name, "png");
+            if (path != "")
+            {
+                File.WriteAllBytes(path, tex.EncodeToPNG());
+                SE.Play();
+            }
         }
+    }
 
-        SE.Play();
+    string GetPath(string name, string type)
+    {
+        var item = StandaloneFileBrowser.SaveFilePanel("Save Photo", "", name, type);
+        if (string.IsNullOrEmpty(item.Name))
+        {
+            return "";
+        }
+        var ext = Path.GetExtension(item.Name);
+        if (ext != "." + type)
+        {
+            // 拡張子が無い場合のみ拡張子を付け足す
+            item.Name += "." + type;
+        }
+        return item.Name;
     }
 }
