@@ -410,6 +410,9 @@ public class LoadFile : MonoBehaviour
             mesh.updateWhenOffscreen = true;
         }
 
+        // ABファイルから適用されるアニメーションで原点移動を有効にしたい
+        anim.applyRootMotion = true;
+
         DandD.SetActive(false);
     }
 
