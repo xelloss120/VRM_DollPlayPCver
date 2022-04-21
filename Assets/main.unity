@@ -12214,7 +12214,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'Please drag & drop.
 
-    (VRM, PNG, JPG)'
+    (VRM, GLB, FBX, PNG, JPG)'
 --- !u!222 &586092425
 CanvasRenderer:
   m_ObjectHideFlags: 0
