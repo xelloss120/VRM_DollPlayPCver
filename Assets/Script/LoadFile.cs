@@ -9,6 +9,7 @@ using B83.Win32;
 using TriLibCore;
 using RootMotion.FinalIK;
 using RootMotion.Dynamics;
+using Battlehub.RTHandles;
 
 public class LoadFile : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class LoadFile : MonoBehaviour
     [SerializeField] SelectVRM SelectVRM;
     [SerializeField] GameObject Camera;
     [SerializeField] GameObject Light;
+    [SerializeField] RuntimeSceneComponent RuntimeSceneComponent;
 
     List<HumanBodyBones> PrimalBones;
     AssetBundle AssetBundle;
@@ -575,14 +577,9 @@ public class LoadFile : MonoBehaviour
                 }
                 else if (item == "Camera")
                 {
-                    Camera.transform.position = GetVector3(lineCSV, 1);
-                    Camera.transform.eulerAngles = GetVector3(lineCSV, 4);
-
-                    // カメラ位置と回転だけ適用しても操作すると実行時の前回位置に釣られるのでこちらも必要
-                    var orbit = Camera.GetComponent<Battlehub.RTCommon.MouseOrbit>();
-                    orbit.Target.position = GetVector3(lineCSV, 10);
-                    //orbit.SyncAngles();
-                    orbit.Distance = (orbit.Target.transform.position - Camera.transform.position).magnitude;
+                    // カメラは位置と回転を適用してもRTHandlesのPivotに視点が釣られるのでPivotの位置も必要
+                    RuntimeSceneComponent.CameraPosition = GetVector3(lineCSV, 1);
+                    RuntimeSceneComponent.Pivot = GetVector3(lineCSV, 10);
                 }
                 else if (item == "Light")
                 {

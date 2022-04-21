@@ -33161,6 +33161,7 @@ MonoBehaviour:
   SelectVRM: {fileID: 1695185905}
   Camera: {fileID: 963194225}
   Light: {fileID: 113007471}
+  RuntimeSceneComponent: {fileID: 1819877724}
 --- !u!114 &1695185902
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33555,6 +33556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 963194225}
+  RuntimeSceneComponent: {fileID: 1819877724}
 --- !u!1 &1699723486
 GameObject:
   m_ObjectHideFlags: 0

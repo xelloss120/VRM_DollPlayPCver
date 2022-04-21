@@ -2,10 +2,12 @@
 using System.IO;
 using UnityEngine;
 using TriLibCore.SFB;
+using Battlehub.RTHandles;
 
 public class SaveScene : MonoBehaviour
 {
     [SerializeField] GameObject Camera;
+    [SerializeField] RuntimeSceneComponent RuntimeSceneComponent;
 
     public void Save()
     {
@@ -23,16 +25,23 @@ public class SaveScene : MonoBehaviour
             var saveSceneTarget = obj.GetComponent<SaveSceneTarget>();
             if (saveSceneTarget != null)
             {
-                var path = saveSceneTarget.Path;
-                var pos = obj.transform.position;
-                var ang = obj.transform.eulerAngles;
-                var sca = obj.transform.localScale;
-                var line = path + "," + pos.x + "," + pos.y + "," + pos.z + "," + ang.x + "," + ang.y + "," + ang.z + "," + sca.x + "," + sca.y + "," + sca.z;
-                if (path == "Camera")
+                var line = saveSceneTarget.Path;
+                if (line == "Camera")
                 {
-                    // カメラだけは位置と回転を適用しても操作すると実行時の前回位置に釣られるのでこちらも必要
-                    var orbit = Camera.GetComponent<Battlehub.RTCommon.MouseOrbit>();
-                    line += "," + orbit.Target.position.x + "," + orbit.Target.position.y + "," + orbit.Target.position.z;
+                    var pos = RuntimeSceneComponent.CameraPosition;
+                    var ang = Vector3.zero;
+                    var sca = Vector3.zero;
+                    line += "," + pos.x + "," + pos.y + "," + pos.z + "," + ang.x + "," + ang.y + "," + ang.z + "," + sca.x + "," + sca.y + "," + sca.z;
+
+                    // カメラは位置と回転を適用してもRTHandlesのPivotに視点が釣られるのでPivotの位置も必要
+                    line += "," + RuntimeSceneComponent.Pivot.x + "," + RuntimeSceneComponent.Pivot.y + "," + RuntimeSceneComponent.Pivot.z;
+                }
+                else
+                {
+                    var pos = obj.transform.position;
+                    var ang = obj.transform.eulerAngles;
+                    var sca = obj.transform.localScale;
+                    line += "," + pos.x + "," + pos.y + "," + pos.z + "," + ang.x + "," + ang.y + "," + ang.z + "," + sca.x + "," + sca.y + "," + sca.z;
                 }
                 csv += line + "\n";
             }
