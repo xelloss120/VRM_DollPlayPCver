@@ -13,10 +13,16 @@ public class SavePoseTXT : MonoBehaviour
             return;
         }
 
-        var item = StandaloneFileBrowser.SaveFilePanel("Save Pose TXT", "", "pose.txt", "txt");
+        var item = StandaloneFileBrowser.SaveFilePanel("Save Pose TXT", "", "pose", "txt");
         if (string.IsNullOrEmpty(item.Name))
         {
             return;
+        }
+        var ext = Path.GetExtension(item.Name);
+        if (ext != ".txt")
+        {
+            // 拡張子が無い場合のみ拡張子を付け足す
+            item.Name += ".txt";
         }
 
         var pose = "";

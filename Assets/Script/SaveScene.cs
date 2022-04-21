@@ -11,10 +11,16 @@ public class SaveScene : MonoBehaviour
 
     public void Save()
     {
-        var saveItem = StandaloneFileBrowser.SaveFilePanel("Save Scene TXT", "", "scene.txt", "txt");
+        var saveItem = StandaloneFileBrowser.SaveFilePanel("Save Scene TXT", "", "scene", "txt");
         if (string.IsNullOrEmpty(saveItem.Name))
         {
             return;
+        }
+        var ext = Path.GetExtension(saveItem.Name);
+        if (ext != ".txt")
+        {
+            // 拡張子が無い場合のみ拡張子を付け足す
+            saveItem.Name += ".txt";
         }
 
         var csv = "";

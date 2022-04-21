@@ -15,10 +15,16 @@ public class SavePosePNG : MonoBehaviour
             return;
         }
 
-        var item = StandaloneFileBrowser.SaveFilePanel("Save Pose PNG", "", "pose.png", "png");
+        var item = StandaloneFileBrowser.SaveFilePanel("Save Pose PNG", "", "pose", "png");
         if (string.IsNullOrEmpty(item.Name))
         {
             return;
+        }
+        var ext = Path.GetExtension(item.Name);
+        if (ext != ".png")
+        {
+            // 拡張子が無い場合のみ拡張子を付け足す
+            item.Name += ".png";
         }
 
         RenderTexture RenTex = Camera.targetTexture;
