@@ -209,7 +209,7 @@ public class LoadFile : MonoBehaviour
         {
             var markerM = Instantiate(MarkerM).transform;
             markerM.name = "GLB_Root";
-            markerM.position = new Vector3(0, -1, 0);
+            markerM.position = new Vector3(0, 0, 0);
             markerM.gameObject.AddComponent<SaveSceneTarget>().Path = path;
 
             var instance = loader.Load();
@@ -633,7 +633,7 @@ public class LoadFile : MonoBehaviour
 
         var markerM = Instantiate(MarkerM).transform;
         markerM.name = "TriLib_Root";
-        markerM.position = new Vector3(0, -1, 0);
+        markerM.position = new Vector3(0, 0, 0);
         markerM.gameObject.AddComponent<SaveSceneTarget>().Path = TriLibPath;
         assetLoaderContext.RootGameObject.transform.parent = markerM;
 
