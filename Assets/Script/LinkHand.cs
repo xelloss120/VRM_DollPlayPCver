@@ -3,10 +3,22 @@ using UnityEngine.UI;
 
 public class LinkHand : MonoBehaviour
 {
-    [SerializeField] Text TextL;
-    [SerializeField] Text TextR;
-    [SerializeField] Slider SliderL;
-    [SerializeField] Slider SliderR;
+    [SerializeField] GameObject HandUI;
+
+    [SerializeField] Slider SliderL_Thumb;
+    [SerializeField] Slider SliderL_Index;
+    [SerializeField] Slider SliderL_Middle;
+    [SerializeField] Slider SliderL_Ring;
+    [SerializeField] Slider SliderL_Little;
+    [SerializeField] Slider SliderL_Piece;
+
+    [SerializeField] Slider SliderR_Thumb;
+    [SerializeField] Slider SliderR_Index;
+    [SerializeField] Slider SliderR_Middle;
+    [SerializeField] Slider SliderR_Ring;
+    [SerializeField] Slider SliderR_Little;
+    [SerializeField] Slider SliderR_Piece;
+
     [SerializeField] SelectVRM SelectVRM;
 
     Animator Anim = null;
@@ -31,16 +43,12 @@ public class LinkHand : MonoBehaviour
     Hand HandR;
 
     Vector3 LeftFingerAngle = new Vector3(0, 0, 80);
-    Vector3 LeftFingerAngleI = new Vector3(0, 0, -5);
-    Vector3 LeftFingerAngleM = new Vector3(0, 0, -5);
     Vector3 LeftFingerAngleT = new Vector3(30, -30, 0);
-    Vector3 LeftFingerAngleP = new Vector3(0, 10, 0);
+    Vector3 LeftFingerAngleP = new Vector3(0, 20, 0);
 
     Vector3 RightFingerAngle = new Vector3(0, 0, -80);
-    Vector3 RightFingerAngleI = new Vector3(0, 0, 5);
-    Vector3 RightFingerAngleM = new Vector3(0, 0, 5);
     Vector3 RightFingerAngleT = new Vector3(30, 30, 0);
-    Vector3 RightFingerAngleP = new Vector3(0, -10, 0);
+    Vector3 RightFingerAngleP = new Vector3(0, -20, 0);
 
     void Update()
     {
@@ -86,61 +94,60 @@ public class LinkHand : MonoBehaviour
             HandR.Little.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightLittleIntermediate);
             HandR.Little.Distal = Anim.GetBoneTransform(HumanBodyBones.RightLittleDistal);
 
-            var lz = HandL.Index.Proximal.localEulerAngles.z;
-            var rz = HandR.Index.Proximal.localEulerAngles.z;
-            lz = lz < 180 ? lz : lz - 360;
-            rz = rz > 180 ? rz - 360 : rz;
-            SliderL.value = lz > 0 ? lz / LeftFingerAngle.z : -lz / LeftFingerAngleI.z;
-            SliderR.value = rz < 0 ? rz / RightFingerAngle.z : -rz / RightFingerAngleI.z;
+            var leftY = HandL.Index.Proximal.localEulerAngles.y;
+            var rightY = HandR.Index.Proximal.localEulerAngles.y;
+            leftY = leftY < 180 ? leftY : leftY - 360;
+            rightY = rightY > 180 ? rightY - 360 : rightY;
+
+            SliderL_Thumb.value = HandL.Thumb.Proximal.localEulerAngles.x / LeftFingerAngleT.x;
+            SliderL_Index.value = HandL.Index.Proximal.localEulerAngles.z / LeftFingerAngle.z;
+            SliderL_Middle.value = HandL.Middle.Proximal.localEulerAngles.z / LeftFingerAngle.z;
+            SliderL_Ring.value = HandL.Ring.Proximal.localEulerAngles.z / LeftFingerAngle.z;
+            SliderL_Little.value = HandL.Little.Proximal.localEulerAngles.z / LeftFingerAngle.z;
+            SliderL_Piece.value = leftY / LeftFingerAngleP.y;
+
+            SliderR_Thumb.value = HandR.Thumb.Proximal.localEulerAngles.x / RightFingerAngleT.x;
+            SliderR_Index.value = -HandR.Index.Proximal.localEulerAngles.z / RightFingerAngle.z;
+            SliderR_Middle.value = -HandR.Middle.Proximal.localEulerAngles.z / RightFingerAngle.z;
+            SliderR_Ring.value = -HandR.Ring.Proximal.localEulerAngles.z / RightFingerAngle.z;
+            SliderR_Little.value = -HandR.Little.Proximal.localEulerAngles.z / RightFingerAngle.z;
+            SliderR_Piece.value = rightY / RightFingerAngleP.y;
 
             return;
         }
 
         if (Anim != null && !SelectVRM.IsFullBone)
         {
-            SetFingerAngle(SliderL.value, HandL, LeftFingerAngle, LeftFingerAngleT, LeftFingerAngleI, LeftFingerAngleM, LeftFingerAngleP);
-            SetFingerAngle(SliderR.value, HandR, RightFingerAngle, RightFingerAngleT, RightFingerAngleI, RightFingerAngleM, RightFingerAngleP);
+            SetFingerAngle(SliderL_Thumb.value, SliderL_Index.value, SliderL_Middle.value, SliderL_Ring.value, SliderL_Little.value, SliderL_Piece.value,
+                HandL, LeftFingerAngle, LeftFingerAngleT, LeftFingerAngleP);
+            SetFingerAngle(SliderR_Thumb.value, SliderR_Index.value, SliderR_Middle.value, SliderR_Ring.value, SliderR_Little.value, SliderR_Piece.value,
+                HandR, RightFingerAngle, RightFingerAngleT, RightFingerAngleP);
         }
 
-        TextL.gameObject.SetActive(!SelectVRM.IsFullBone);
-        TextR.gameObject.SetActive(!SelectVRM.IsFullBone);
-        SliderL.gameObject.SetActive(!SelectVRM.IsFullBone);
-        SliderR.gameObject.SetActive(!SelectVRM.IsFullBone);
+        HandUI.gameObject.SetActive(!SelectVRM.IsFullBone);
     }
 
-    void SetFingerAngle(float value, Hand hand, Vector3 fingerAngle, Vector3 fingerAngleT, Vector3 fingerAngleI, Vector3 fingerAngleM, Vector3 fingerAngleP)
+    void SetFingerAngle(float thumb, float index, float middle, float ring, float little, float piece,
+        Hand hand, Vector3 fingerAngle, Vector3 fingerAngleT, Vector3 fingerAngleP)
     {
-        var sw = value > 0;
-        var coef = sw ? value : -value;
+        hand.Thumb.Proximal.localEulerAngles = fingerAngleT * thumb;
+        hand.Thumb.Intermediate.localEulerAngles = fingerAngleT * thumb;
+        hand.Thumb.Distal.localEulerAngles = fingerAngleT * thumb;
 
-        hand.Thumb.Proximal.localEulerAngles = fingerAngleT * coef;
-        hand.Thumb.Intermediate.localEulerAngles = fingerAngleT * coef;
-        hand.Thumb.Distal.localEulerAngles = fingerAngleT * coef;
+        hand.Index.Proximal.localEulerAngles = fingerAngle * index + fingerAngleP * piece;
+        hand.Index.Intermediate.localEulerAngles = fingerAngle * index;
+        hand.Index.Distal.localEulerAngles = fingerAngle * index;
 
-        if (sw)
-        {
-            hand.Index.Proximal.localEulerAngles = fingerAngle * coef;
-            hand.Index.Intermediate.localEulerAngles = fingerAngle * coef;
-            hand.Index.Distal.localEulerAngles = fingerAngle * coef;
-            hand.Middle.Proximal.localEulerAngles = fingerAngle * coef;
-            hand.Middle.Intermediate.localEulerAngles = fingerAngle * coef;
-            hand.Middle.Distal.localEulerAngles = fingerAngle * coef;
-        }
-        else
-        {
-            hand.Index.Proximal.localEulerAngles = (fingerAngleI + fingerAngleP) * coef;
-            hand.Index.Intermediate.localEulerAngles = fingerAngleI * coef;
-            hand.Index.Distal.localEulerAngles = fingerAngleI * coef;
-            hand.Middle.Proximal.localEulerAngles = (fingerAngleM - fingerAngleP) * coef;
-            hand.Middle.Intermediate.localEulerAngles = fingerAngleM * coef;
-            hand.Middle.Distal.localEulerAngles = fingerAngleM * coef;
-        }
+        hand.Middle.Proximal.localEulerAngles = fingerAngle * middle - fingerAngleP * piece;
+        hand.Middle.Intermediate.localEulerAngles = fingerAngle * middle;
+        hand.Middle.Distal.localEulerAngles = fingerAngle * middle;
 
-        hand.Ring.Proximal.localEulerAngles = fingerAngle * coef;
-        hand.Ring.Intermediate.localEulerAngles = fingerAngle * coef;
-        hand.Ring.Distal.localEulerAngles = fingerAngle * coef;
-        hand.Little.Proximal.localEulerAngles = fingerAngle * coef;
-        hand.Little.Intermediate.localEulerAngles = fingerAngle * coef;
-        hand.Little.Distal.localEulerAngles = fingerAngle * coef;
+        hand.Ring.Proximal.localEulerAngles = fingerAngle * ring;
+        hand.Ring.Intermediate.localEulerAngles = fingerAngle * ring;
+        hand.Ring.Distal.localEulerAngles = fingerAngle * ring;
+
+        hand.Little.Proximal.localEulerAngles = fingerAngle * little;
+        hand.Little.Intermediate.localEulerAngles = fingerAngle * little;
+        hand.Little.Distal.localEulerAngles = fingerAngle * little;
     }
 }
