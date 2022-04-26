@@ -16,7 +16,7 @@ public class Photo : MonoBehaviour
     {
         RenderTexture RenTex = Camera.targetTexture;
         RenderTexture.active = RenTex;
-        Texture2D tex = new Texture2D(RenTex.width, RenTex.height);
+        Texture2D tex = new Texture2D(RenTex.width, RenTex.height, TextureFormat.RGBAFloat, false);
         tex.ReadPixels(new Rect(0, 0, RenTex.width, RenTex.height), 0, 0);
         var color = tex.GetPixels();
         for (int i = 0; i < color.Length; i++)
