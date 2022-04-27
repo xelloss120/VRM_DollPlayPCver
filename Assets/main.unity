@@ -37279,6 +37279,7 @@ MonoBehaviour:
   Light: {fileID: 113007471}
   RuntimeSceneComponent: {fileID: 1819877724}
   TEST: {fileID: 1169936863}
+  LinkBlendShape: {fileID: 1695185906}
   LinkHand: {fileID: 1695185904}
 --- !u!114 &1695185902
 MonoBehaviour:

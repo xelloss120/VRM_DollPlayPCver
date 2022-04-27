@@ -81,7 +81,7 @@ public class LinkBlendShape : MonoBehaviour
         }
     }
 
-    void GetBlendShape()
+    public void GetBlendShape()
     {
         // VRM
         DestroyContent(VRMContent, VRMSliders);

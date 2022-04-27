@@ -28,6 +28,7 @@ public class LoadFile : MonoBehaviour
     [SerializeField] GameObject Light;
     [SerializeField] RuntimeSceneComponent RuntimeSceneComponent;
     [SerializeField] GameObject TEST;
+    [SerializeField] LinkBlendShape LinkBlendShape;
     [SerializeField] LinkHand LinkHand;
 
     List<HumanBodyBones> PrimalBones;
@@ -452,6 +453,43 @@ public class LoadFile : MonoBehaviour
                         SelectVRM.Marker.List[i].localEulerAngles = new Vector3(float_x, float_y, float_z);
                     }
                 }
+                // 指
+                {
+                    var index = 512 * 1;
+                    var start = (int)HumanBodyBones.LeftThumbProximal;
+                    var end = (int)HumanBodyBones.RightLittleDistal;
+                    for (var i = start; i <= end; i++)
+                    {
+                        var v3 = ColorToVector3(color, index + i * 3, 1);
+                        var tf = SelectVRM.Animator.GetBoneTransform((HumanBodyBones)i);
+                        tf.localEulerAngles = v3;
+                    }
+                    LinkHand.GetFingerAngle();
+                }
+                // ブレンドシェイプ
+                {
+                    var index = 512 * 2;
+                    var values = new Dictionary<BlendShapeKey, float>();
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral), ColorToFloat(color[index + 0]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.A), ColorToFloat(color[index + 1]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.I), ColorToFloat(color[index + 2]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.U), ColorToFloat(color[index + 3]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.E), ColorToFloat(color[index + 4]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), ColorToFloat(color[index + 5]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink), ColorToFloat(color[index + 6]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy), ColorToFloat(color[index + 7]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry), ColorToFloat(color[index + 8]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow), ColorToFloat(color[index + 9]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun), ColorToFloat(color[index + 10]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp), ColorToFloat(color[index + 11]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown), ColorToFloat(color[index + 12]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft), ColorToFloat(color[index + 13]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight), ColorToFloat(color[index + 14]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), ColorToFloat(color[index + 15]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), ColorToFloat(color[index + 16]));
+                    SelectVRM.Proxy.SetValues(values);
+                    LinkBlendShape.GetBlendShape();
+                }
                 // VRIKターゲットの位置と回転を読込
                 {
                     var index = 512 * 5;
@@ -472,19 +510,6 @@ public class LoadFile : MonoBehaviour
                     SelectVRM.Marker.List[count - 3].localEulerAngles = ColorToVector3(color, index - 40);
                     SelectVRM.Marker.List[count - 2].localEulerAngles = ColorToVector3(color, index - 43);
                     SelectVRM.Marker.List[count - 1].localEulerAngles = ColorToVector3(color, index - 46);
-                }
-                // 指
-                {
-                    var index = 512 * 5;
-                    var start = (int)HumanBodyBones.LeftThumbProximal;
-                    var end = (int)HumanBodyBones.RightLittleDistal;
-                    for (var i = start; i <= end; i++)
-                    {
-                        var v3 = ColorToVector3(color, index + i * 3, 1);
-                        var tf = SelectVRM.Animator.GetBoneTransform((HumanBodyBones)i);
-                        tf.localEulerAngles = v3;
-                    }
-                    LinkHand.GetFingerAngle();
                 }
             }
             return null;
@@ -527,6 +552,13 @@ public class LoadFile : MonoBehaviour
             vec3 = new Vector3(float_x, float_y, float_z);
         }
         return vec3;
+    }
+
+    float ColorToFloat(Color color)
+    {
+        byte[] data = { (byte)(color.r * byte.MaxValue), (byte)(color.g * byte.MaxValue), (byte)(color.b * byte.MaxValue), (byte)(color.a * byte.MaxValue) };
+        var ret = BitConverter.ToSingle(data, 0);
+        return ret;
     }
 
     void AB(string path)

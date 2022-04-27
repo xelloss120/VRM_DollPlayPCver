@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEngine;
 using TriLibCore.SFB;
+using VRM;
 
 public class SavePosePNG : MonoBehaviour
 {
@@ -74,6 +75,35 @@ public class SavePosePNG : MonoBehaviour
             }
         }
 
+        // 指
+        index = 512 * 1;
+        var start = (int)HumanBodyBones.LeftThumbProximal;
+        var end = (int)HumanBodyBones.RightLittleDistal;
+        for (var i = start; i <= end; i++)
+        {
+            SetColor(color, index + i * 3, (HumanBodyBones)i);
+        }
+
+        // ブレンドシェイプ
+        index = 512 * 2;
+        color[index + 0] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral)));
+        color[index + 1] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.A)));
+        color[index + 2] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.I)));
+        color[index + 3] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.U)));
+        color[index + 4] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.E)));
+        color[index + 5] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O)));
+        color[index + 6] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink)));
+        color[index + 7] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy)));
+        color[index + 8] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry)));
+        color[index + 9] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow)));
+        color[index + 10] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun)));
+        color[index + 11] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp)));
+        color[index + 12] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown)));
+        color[index + 13] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft)));
+        color[index + 14] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight)));
+        color[index + 15] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L)));
+        color[index + 16] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R)));
+
         // VRIKターゲットの位置と回転を保存
         index = 512 * 5;
         var count = SelectVRM.Marker.List.Count;
@@ -93,14 +123,6 @@ public class SavePosePNG : MonoBehaviour
         SetColor(color, index - 40, count - 3, false);
         SetColor(color, index - 43, count - 2, false);
         SetColor(color, index - 46, count - 1, false);
-
-        // 指
-        var start = (int)HumanBodyBones.LeftThumbProximal;
-        var end = (int)HumanBodyBones.RightLittleDistal;
-        for (var i = start; i <= end; i++)
-        {
-            SetColor(color, index + i * 3, (HumanBodyBones)i);
-        }
 
         tex.SetPixels(color);
         tex.Apply();
