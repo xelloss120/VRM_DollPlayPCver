@@ -27,6 +27,8 @@ public class LoadFile : MonoBehaviour
     [SerializeField] GameObject Camera;
     [SerializeField] GameObject Light;
     [SerializeField] RuntimeSceneComponent RuntimeSceneComponent;
+    [SerializeField] GameObject TEST;
+    [SerializeField] LinkHand LinkHand;
 
     List<HumanBodyBones> PrimalBones;
     AssetBundle AssetBundle;
@@ -111,6 +113,8 @@ public class LoadFile : MonoBehaviour
         //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\Oroka2.vrm");
         //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\AoLinz.vrm");
         //TriLib(@"D:\play\Model\Reeva_v1.0.5\Models\Model_scooter.fbx");
+#else
+        TEST.SetActive(false);
 #endif
     }
 
@@ -469,6 +473,19 @@ public class LoadFile : MonoBehaviour
                     SelectVRM.Marker.List[count - 2].localEulerAngles = ColorToVector3(color, index - 43);
                     SelectVRM.Marker.List[count - 1].localEulerAngles = ColorToVector3(color, index - 46);
                 }
+                // 指
+                {
+                    var index = 512 * 5;
+                    var start = (int)HumanBodyBones.LeftThumbProximal;
+                    var end = (int)HumanBodyBones.RightLittleDistal;
+                    for (var i = start; i <= end; i++)
+                    {
+                        var v3 = ColorToVector3(color, index + i * 3, 1);
+                        var tf = SelectVRM.Animator.GetBoneTransform((HumanBodyBones)i);
+                        tf.localEulerAngles = v3;
+                    }
+                    LinkHand.GetFingerAngle();
+                }
             }
             return null;
         }
@@ -496,11 +513,11 @@ public class LoadFile : MonoBehaviour
         return obj;
     }
 
-    Vector3 ColorToVector3(Color[] color, int index)
+    Vector3 ColorToVector3(Color[] color, int index, int f = -1)
     {
-        byte[] byte_x = { (byte)(color[index - 0].r * byte.MaxValue), (byte)(color[index - 0].g * byte.MaxValue), (byte)(color[index - 0].b * byte.MaxValue), (byte)(color[index - 0].a * byte.MaxValue) };
-        byte[] byte_y = { (byte)(color[index - 1].r * byte.MaxValue), (byte)(color[index - 1].g * byte.MaxValue), (byte)(color[index - 1].b * byte.MaxValue), (byte)(color[index - 1].a * byte.MaxValue) };
-        byte[] byte_z = { (byte)(color[index - 2].r * byte.MaxValue), (byte)(color[index - 2].g * byte.MaxValue), (byte)(color[index - 2].b * byte.MaxValue), (byte)(color[index - 2].a * byte.MaxValue) };
+        byte[] byte_x = { (byte)(color[index + 0 * f].r * byte.MaxValue), (byte)(color[index + 0 * f].g * byte.MaxValue), (byte)(color[index + 0 * f].b * byte.MaxValue), (byte)(color[index + 0 * f].a * byte.MaxValue) };
+        byte[] byte_y = { (byte)(color[index + 1 * f].r * byte.MaxValue), (byte)(color[index + 1 * f].g * byte.MaxValue), (byte)(color[index + 1 * f].b * byte.MaxValue), (byte)(color[index + 1 * f].a * byte.MaxValue) };
+        byte[] byte_z = { (byte)(color[index + 2 * f].r * byte.MaxValue), (byte)(color[index + 2 * f].g * byte.MaxValue), (byte)(color[index + 2 * f].b * byte.MaxValue), (byte)(color[index + 2 * f].a * byte.MaxValue) };
         var float_x = BitConverter.ToSingle(byte_x, 0);
         var float_y = BitConverter.ToSingle(byte_y, 0);
         var float_z = BitConverter.ToSingle(byte_z, 0);

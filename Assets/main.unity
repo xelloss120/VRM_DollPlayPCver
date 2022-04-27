@@ -26257,7 +26257,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1169936864
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37278,6 +37278,8 @@ MonoBehaviour:
   Camera: {fileID: 963194225}
   Light: {fileID: 113007471}
   RuntimeSceneComponent: {fileID: 1819877724}
+  TEST: {fileID: 1169936863}
+  LinkHand: {fileID: 1695185904}
 --- !u!114 &1695185902
 MonoBehaviour:
   m_ObjectHideFlags: 0

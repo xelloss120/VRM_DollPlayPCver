@@ -70,66 +70,7 @@ public class LinkHand : MonoBehaviour
 
         if (Anim != SelectVRM.Animator)
         {
-            Anim = SelectVRM.Animator;
-
-            HandL.Thumb.Proximal = Anim.GetBoneTransform(HumanBodyBones.LeftThumbProximal);
-            HandL.Thumb.Intermediate = Anim.GetBoneTransform(HumanBodyBones.LeftThumbIntermediate);
-            HandL.Thumb.Distal = Anim.GetBoneTransform(HumanBodyBones.LeftThumbDistal);
-            HandL.Index.Proximal = Anim.GetBoneTransform(HumanBodyBones.LeftIndexProximal);
-            HandL.Index.Intermediate = Anim.GetBoneTransform(HumanBodyBones.LeftIndexIntermediate);
-            HandL.Index.Distal = Anim.GetBoneTransform(HumanBodyBones.LeftIndexDistal);
-            HandL.Middle.Proximal = Anim.GetBoneTransform(HumanBodyBones.LeftMiddleProximal);
-            HandL.Middle.Intermediate = Anim.GetBoneTransform(HumanBodyBones.LeftMiddleIntermediate);
-            HandL.Middle.Distal = Anim.GetBoneTransform(HumanBodyBones.LeftMiddleDistal);
-            HandL.Ring.Proximal = Anim.GetBoneTransform(HumanBodyBones.LeftRingProximal);
-            HandL.Ring.Intermediate = Anim.GetBoneTransform(HumanBodyBones.LeftRingIntermediate);
-            HandL.Ring.Distal = Anim.GetBoneTransform(HumanBodyBones.LeftRingDistal);
-            HandL.Little.Proximal = Anim.GetBoneTransform(HumanBodyBones.LeftLittleProximal);
-            HandL.Little.Intermediate = Anim.GetBoneTransform(HumanBodyBones.LeftLittleIntermediate);
-            HandL.Little.Distal = Anim.GetBoneTransform(HumanBodyBones.LeftLittleDistal);
-
-            HandR.Thumb.Proximal = Anim.GetBoneTransform(HumanBodyBones.RightThumbProximal);
-            HandR.Thumb.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightThumbIntermediate);
-            HandR.Thumb.Distal = Anim.GetBoneTransform(HumanBodyBones.RightThumbDistal);
-            HandR.Index.Proximal = Anim.GetBoneTransform(HumanBodyBones.RightIndexProximal);
-            HandR.Index.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightIndexIntermediate);
-            HandR.Index.Distal = Anim.GetBoneTransform(HumanBodyBones.RightIndexDistal);
-            HandR.Middle.Proximal = Anim.GetBoneTransform(HumanBodyBones.RightMiddleProximal);
-            HandR.Middle.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightMiddleIntermediate);
-            HandR.Middle.Distal = Anim.GetBoneTransform(HumanBodyBones.RightMiddleDistal);
-            HandR.Ring.Proximal = Anim.GetBoneTransform(HumanBodyBones.RightRingProximal);
-            HandR.Ring.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightRingIntermediate);
-            HandR.Ring.Distal = Anim.GetBoneTransform(HumanBodyBones.RightRingDistal);
-            HandR.Little.Proximal = Anim.GetBoneTransform(HumanBodyBones.RightLittleProximal);
-            HandR.Little.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightLittleIntermediate);
-            HandR.Little.Distal = Anim.GetBoneTransform(HumanBodyBones.RightLittleDistal);
-
-            var leftYI = HandL.Index.Proximal.localEulerAngles.y;
-            var leftYL = HandL.Little.Proximal.localEulerAngles.y;
-            var rightYI = HandR.Index.Proximal.localEulerAngles.y;
-            var rightYL = HandR.Little.Proximal.localEulerAngles.y;
-
-            leftYI = leftYI < 180 ? leftYI : leftYI - 360;
-            leftYL = leftYL < 180 ? -leftYL : 360 - leftYL;
-            rightYI = rightYI > 180 ? rightYI - 360 : rightYI;
-            rightYL = rightYL > 180 ? 360 - rightYL : -rightYL;
-
-            SliderL_Thumb.value = HandL.Thumb.Proximal.localEulerAngles.x / LeftFingerAngleT.x;
-            SliderL_Index.value = HandL.Index.Proximal.localEulerAngles.z / LeftFingerAngle.z;
-            SliderL_Middle.value = HandL.Middle.Proximal.localEulerAngles.z / LeftFingerAngle.z;
-            SliderL_Ring.value = HandL.Ring.Proximal.localEulerAngles.z / LeftFingerAngle.z;
-            SliderL_Little.value = HandL.Little.Proximal.localEulerAngles.z / LeftFingerAngle.z;
-            SliderL_Piece.value = leftYI / LeftFingerAngleYI.y;
-            SliderL_Other.value = leftYL / LeftFingerAngleYL.y;
-
-            SliderR_Thumb.value = HandR.Thumb.Proximal.localEulerAngles.x / RightFingerAngleT.x;
-            SliderR_Index.value = -HandR.Index.Proximal.localEulerAngles.z / RightFingerAngle.z;
-            SliderR_Middle.value = -HandR.Middle.Proximal.localEulerAngles.z / RightFingerAngle.z;
-            SliderR_Ring.value = -HandR.Ring.Proximal.localEulerAngles.z / RightFingerAngle.z;
-            SliderR_Little.value = -HandR.Little.Proximal.localEulerAngles.z / RightFingerAngle.z;
-            SliderR_Piece.value = rightYI / RightFingerAngleYI.y;
-            SliderR_Other.value = rightYL / RightFingerAngleYL.y;
-
+            GetFingerAngle();
             return;
         }
 
@@ -166,5 +107,68 @@ public class LinkHand : MonoBehaviour
         hand.Little.Proximal.localEulerAngles = fingerAngle * little - fingerAngleYL * other;
         hand.Little.Intermediate.localEulerAngles = fingerAngle * little;
         hand.Little.Distal.localEulerAngles = fingerAngle * little;
+    }
+
+    public void GetFingerAngle()
+    {
+        Anim = SelectVRM.Animator;
+
+        HandL.Thumb.Proximal = Anim.GetBoneTransform(HumanBodyBones.LeftThumbProximal);
+        HandL.Thumb.Intermediate = Anim.GetBoneTransform(HumanBodyBones.LeftThumbIntermediate);
+        HandL.Thumb.Distal = Anim.GetBoneTransform(HumanBodyBones.LeftThumbDistal);
+        HandL.Index.Proximal = Anim.GetBoneTransform(HumanBodyBones.LeftIndexProximal);
+        HandL.Index.Intermediate = Anim.GetBoneTransform(HumanBodyBones.LeftIndexIntermediate);
+        HandL.Index.Distal = Anim.GetBoneTransform(HumanBodyBones.LeftIndexDistal);
+        HandL.Middle.Proximal = Anim.GetBoneTransform(HumanBodyBones.LeftMiddleProximal);
+        HandL.Middle.Intermediate = Anim.GetBoneTransform(HumanBodyBones.LeftMiddleIntermediate);
+        HandL.Middle.Distal = Anim.GetBoneTransform(HumanBodyBones.LeftMiddleDistal);
+        HandL.Ring.Proximal = Anim.GetBoneTransform(HumanBodyBones.LeftRingProximal);
+        HandL.Ring.Intermediate = Anim.GetBoneTransform(HumanBodyBones.LeftRingIntermediate);
+        HandL.Ring.Distal = Anim.GetBoneTransform(HumanBodyBones.LeftRingDistal);
+        HandL.Little.Proximal = Anim.GetBoneTransform(HumanBodyBones.LeftLittleProximal);
+        HandL.Little.Intermediate = Anim.GetBoneTransform(HumanBodyBones.LeftLittleIntermediate);
+        HandL.Little.Distal = Anim.GetBoneTransform(HumanBodyBones.LeftLittleDistal);
+
+        HandR.Thumb.Proximal = Anim.GetBoneTransform(HumanBodyBones.RightThumbProximal);
+        HandR.Thumb.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightThumbIntermediate);
+        HandR.Thumb.Distal = Anim.GetBoneTransform(HumanBodyBones.RightThumbDistal);
+        HandR.Index.Proximal = Anim.GetBoneTransform(HumanBodyBones.RightIndexProximal);
+        HandR.Index.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightIndexIntermediate);
+        HandR.Index.Distal = Anim.GetBoneTransform(HumanBodyBones.RightIndexDistal);
+        HandR.Middle.Proximal = Anim.GetBoneTransform(HumanBodyBones.RightMiddleProximal);
+        HandR.Middle.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightMiddleIntermediate);
+        HandR.Middle.Distal = Anim.GetBoneTransform(HumanBodyBones.RightMiddleDistal);
+        HandR.Ring.Proximal = Anim.GetBoneTransform(HumanBodyBones.RightRingProximal);
+        HandR.Ring.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightRingIntermediate);
+        HandR.Ring.Distal = Anim.GetBoneTransform(HumanBodyBones.RightRingDistal);
+        HandR.Little.Proximal = Anim.GetBoneTransform(HumanBodyBones.RightLittleProximal);
+        HandR.Little.Intermediate = Anim.GetBoneTransform(HumanBodyBones.RightLittleIntermediate);
+        HandR.Little.Distal = Anim.GetBoneTransform(HumanBodyBones.RightLittleDistal);
+
+        var leftYI = HandL.Index.Proximal.localEulerAngles.y;
+        var leftYL = HandL.Little.Proximal.localEulerAngles.y;
+        var rightYI = HandR.Index.Proximal.localEulerAngles.y;
+        var rightYL = HandR.Little.Proximal.localEulerAngles.y;
+
+        leftYI = leftYI < 180 ? leftYI : leftYI - 360;
+        leftYL = leftYL < 180 ? -leftYL : 360 - leftYL;
+        rightYI = rightYI > 180 ? rightYI - 360 : rightYI;
+        rightYL = rightYL > 180 ? 360 - rightYL : -rightYL;
+
+        SliderL_Thumb.value = HandL.Thumb.Proximal.localEulerAngles.x / LeftFingerAngleT.x;
+        SliderL_Index.value = HandL.Index.Proximal.localEulerAngles.z / LeftFingerAngle.z;
+        SliderL_Middle.value = HandL.Middle.Proximal.localEulerAngles.z / LeftFingerAngle.z;
+        SliderL_Ring.value = HandL.Ring.Proximal.localEulerAngles.z / LeftFingerAngle.z;
+        SliderL_Little.value = HandL.Little.Proximal.localEulerAngles.z / LeftFingerAngle.z;
+        SliderL_Piece.value = leftYI / LeftFingerAngleYI.y;
+        SliderL_Other.value = leftYL / LeftFingerAngleYL.y;
+
+        SliderR_Thumb.value = HandR.Thumb.Proximal.localEulerAngles.x / RightFingerAngleT.x;
+        SliderR_Index.value = -HandR.Index.Proximal.localEulerAngles.z / RightFingerAngle.z;
+        SliderR_Middle.value = -HandR.Middle.Proximal.localEulerAngles.z / RightFingerAngle.z;
+        SliderR_Ring.value = -HandR.Ring.Proximal.localEulerAngles.z / RightFingerAngle.z;
+        SliderR_Little.value = -HandR.Little.Proximal.localEulerAngles.z / RightFingerAngle.z;
+        SliderR_Piece.value = rightYI / RightFingerAngleYI.y;
+        SliderR_Other.value = rightYL / RightFingerAngleYL.y;
     }
 }

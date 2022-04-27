@@ -94,6 +94,14 @@ public class SavePosePNG : MonoBehaviour
         SetColor(color, index - 43, count - 2, false);
         SetColor(color, index - 46, count - 1, false);
 
+        // 指
+        var start = (int)HumanBodyBones.LeftThumbProximal;
+        var end = (int)HumanBodyBones.RightLittleDistal;
+        for (var i = start; i <= end; i++)
+        {
+            SetColor(color, index + i * 3, (HumanBodyBones)i);
+        }
+
         tex.SetPixels(color);
         tex.Apply();
 
@@ -134,6 +142,14 @@ public class SavePosePNG : MonoBehaviour
         color[index - 0] = GetColor(vector3.x);
         color[index - 1] = GetColor(vector3.y);
         color[index - 2] = GetColor(vector3.z);
+    }
+
+    void SetColor(Color[] color, int index, HumanBodyBones bones)
+    {
+        var angle = SelectVRM.Animator.GetBoneTransform(bones).localEulerAngles;
+        color[index + 0] = GetColor(angle.x);
+        color[index + 1] = GetColor(angle.y);
+        color[index + 2] = GetColor(angle.z);
     }
 
     /// <summary>
