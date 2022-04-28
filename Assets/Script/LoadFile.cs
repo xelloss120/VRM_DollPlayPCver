@@ -469,25 +469,42 @@ public class LoadFile : MonoBehaviour
                 // ブレンドシェイプ
                 {
                     var index = 512 * 2;
-                    var values = new Dictionary<BlendShapeKey, float>();
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral), ColorToFloat(color[index + 0]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.A), ColorToFloat(color[index + 1]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.I), ColorToFloat(color[index + 2]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.U), ColorToFloat(color[index + 3]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.E), ColorToFloat(color[index + 4]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), ColorToFloat(color[index + 5]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink), ColorToFloat(color[index + 6]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy), ColorToFloat(color[index + 7]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry), ColorToFloat(color[index + 8]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow), ColorToFloat(color[index + 9]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun), ColorToFloat(color[index + 10]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp), ColorToFloat(color[index + 11]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown), ColorToFloat(color[index + 12]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft), ColorToFloat(color[index + 13]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight), ColorToFloat(color[index + 14]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), ColorToFloat(color[index + 15]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), ColorToFloat(color[index + 16]));
-                    SelectVRM.Proxy.SetValues(values);
+                    if (!SelectVRM.IsFullShape)
+                    {
+                        var values = new Dictionary<BlendShapeKey, float>();
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral), ColorToFloat(color[index + 0]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.A), ColorToFloat(color[index + 1]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.I), ColorToFloat(color[index + 2]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.U), ColorToFloat(color[index + 3]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.E), ColorToFloat(color[index + 4]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), ColorToFloat(color[index + 5]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink), ColorToFloat(color[index + 6]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy), ColorToFloat(color[index + 7]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry), ColorToFloat(color[index + 8]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow), ColorToFloat(color[index + 9]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun), ColorToFloat(color[index + 10]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp), ColorToFloat(color[index + 11]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown), ColorToFloat(color[index + 12]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft), ColorToFloat(color[index + 13]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight), ColorToFloat(color[index + 14]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), ColorToFloat(color[index + 15]));
+                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), ColorToFloat(color[index + 16]));
+                        SelectVRM.Proxy.SetValues(values);
+                    }
+                    else
+                    {
+                        var ii = 64;
+                        var skinneds = SelectVRM.RootMarker.GetComponentsInChildren<SkinnedMeshRenderer>();
+                        foreach (var skinned in skinneds)
+                        {
+                            for (int i = 0; i < skinned.sharedMesh.blendShapeCount; i++)
+                            {
+                                var value = ColorToFloat(color[index + ii]);
+                                skinned.SetBlendShapeWeight(i, value);
+                                ii++;
+                            }
+                        }
+                    }
                     LinkBlendShape.GetBlendShape();
                 }
                 // VRIKターゲットの位置と回転を読込
