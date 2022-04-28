@@ -22,6 +22,11 @@ public class SelectTool : MonoBehaviour
         {
             return;
         }
+        if (active.name == "PointLight")
+        {
+            Move.isOn = true;
+            return;
+        }
 
         var alpha = active.GetComponent<LinkMarkerAlpha>();
         if (alpha == null)
