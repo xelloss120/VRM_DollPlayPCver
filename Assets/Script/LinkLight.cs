@@ -4,7 +4,8 @@ using Battlehub.RTHandles;
 
 public class LinkLight : MonoBehaviour
 {
-    [SerializeField] Light Light;
+    public Light Light;
+
     [SerializeField] Slider Slider;
     [SerializeField] Slider SliderR;
     [SerializeField] Slider SliderG;
@@ -58,7 +59,7 @@ public class LinkLight : MonoBehaviour
                 UI.SetActive(false);
             }
         }
-        if (active.name == "PointLight")
+        if (active != null && active.name == "PointLight")
         {
             // 選択状態が点光源の場合
             PointLight.range = SliderRange.value;
@@ -73,14 +74,31 @@ public class LinkLight : MonoBehaviour
 
     public void AddPointLight()
     {
+        AddPointLight(new Vector3(0, 0.5f, 0), 1, 10, Color.white);
+    }
+
+    public void AddPointLight(Vector3 position, float intensity, float range, Color color)
+    {
         var markerM = Instantiate(Marker).transform;
         markerM.name = "PointLight";
-        markerM.position = new Vector3(0, 0.5f, 0);
+        markerM.position = position;
         markerM.gameObject.AddComponent<SaveSceneTarget>().Path = "PointLight";
 
         var light = markerM.gameObject.AddComponent<Light>();
         light.type = LightType.Point;
         light.shadows = LightShadows.Soft;
         light.shadowNearPlane = 0.1f;
+
+        light.intensity = intensity;
+        light.range = range;
+        light.color = color;
+    }
+
+    public void SetDirectionalLight(float intensity, float r, float g, float b)
+    {
+        Slider.value = intensity;
+        SliderR.value = r;
+        SliderG.value = g;
+        SliderB.value = b;
     }
 }

@@ -625,7 +625,7 @@ public class LoadFile : MonoBehaviour
         var line = txt.Split('\n');
         var csv = line[0].Split(',');
 
-        if (csv.Length == 10)
+        if (csv.Length != 3)
         {
             // シーン読込
             LoadCount = 0;
@@ -636,7 +636,7 @@ public class LoadFile : MonoBehaviour
             {
                 var lineCSV = line[i].Split(',');
                 var item = lineCSV[0];
-                if (item != "" && item != "Camera" && item != "Light")
+                if (item != "" && item != "Camera" && item != "Light" && item != "PointLight" && item != "VRoidHub")
                 {
                     var file = new List<string>();
                     file.Add(item);
@@ -654,6 +654,19 @@ public class LoadFile : MonoBehaviour
                 {
                     Light.transform.position = GetVector3(lineCSV, 1);
                     Light.transform.eulerAngles = GetVector3(lineCSV, 4);
+                    Light.GetComponent<LinkLight>().SetDirectionalLight(float.Parse(lineCSV[10]), float.Parse(lineCSV[11]), float.Parse(lineCSV[12]), float.Parse(lineCSV[13]));
+                }
+                else if (item == "PointLight")
+                {
+                    var position = GetVector3(lineCSV, 1);
+                    var intensity = float.Parse(lineCSV[10]);
+                    var color = new Color(float.Parse(lineCSV[11]), float.Parse(lineCSV[12]), float.Parse(lineCSV[13]));
+                    var range = float.Parse(lineCSV[14]);
+                    Light.GetComponent<LinkLight>().AddPointLight(position, intensity, range, color);
+                }
+                else if (item == "VRoidHub")
+                {
+                    // VRoidHubの場合は何もしない（現状諦め）
                 }
             }
 

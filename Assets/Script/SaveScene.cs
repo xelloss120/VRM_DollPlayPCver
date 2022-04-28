@@ -34,25 +34,48 @@ public class SaveScene : MonoBehaviour
                 var line = saveSceneTarget.Path;
                 if (line == "Camera")
                 {
-                    var pos = RuntimeSceneComponent.CameraPosition;
-                    var ang = Vector3.zero;
-                    var sca = Vector3.zero;
-                    line += "," + pos.x + "," + pos.y + "," + pos.z + "," + ang.x + "," + ang.y + "," + ang.z + "," + sca.x + "," + sca.y + "," + sca.z;
+                    line += GetTransform(RuntimeSceneComponent.CameraPosition);
 
                     // カメラは位置と回転を適用してもRTHandlesのPivotに視点が釣られるのでPivotの位置も必要
                     line += "," + RuntimeSceneComponent.Pivot.x + "," + RuntimeSceneComponent.Pivot.y + "," + RuntimeSceneComponent.Pivot.z;
                 }
+                else if (line == "Light" || line == "PointLight")
+                {
+                    var light = line == "Light" ? obj.GetComponent<LinkLight>().Light : obj.GetComponent<Light>();
+                    line += GetTransform(obj.transform);
+                    line += "," + light.intensity + "," + light.color.r + "," + light.color.g + "," + light.color.b + "," + light.range;
+                }
                 else
                 {
-                    var pos = obj.transform.position;
-                    var ang = obj.transform.eulerAngles;
-                    var sca = obj.transform.localScale;
-                    line += "," + pos.x + "," + pos.y + "," + pos.z + "," + ang.x + "," + ang.y + "," + ang.z + "," + sca.x + "," + sca.y + "," + sca.z;
+                    line += GetTransform(obj.transform);
                 }
                 csv += line + "\n";
             }
         }
 
         File.WriteAllText(saveItem.Name, csv);
+    }
+
+    string GetTransform(Vector3 pos)
+    {
+        var ang = Vector3.zero;
+        var sca = Vector3.zero;
+        var str = GetTransform(pos, ang, sca);
+        return str;
+    }
+
+    string GetTransform(Transform t)
+    {
+        var pos = t.position;
+        var ang = t.eulerAngles;
+        var sca = t.localScale;
+        var str = GetTransform(pos, ang, sca);
+        return str;
+    }
+
+    string GetTransform(Vector3 pos, Vector3 ang, Vector3 sca)
+    {
+        var str = "," + pos.x + "," + pos.y + "," + pos.z + "," + ang.x + "," + ang.y + "," + ang.z + "," + sca.x + "," + sca.y + "," + sca.z;
+        return str;
     }
 }
