@@ -164,10 +164,10 @@ public class LinkHand : MonoBehaviour
         SliderL_Other.value = leftYL / LeftFingerAngleYL.y;
 
         SliderR_Thumb.value = HandR.Thumb.Proximal.localEulerAngles.x / RightFingerAngleT.x;
-        SliderR_Index.value = -HandR.Index.Proximal.localEulerAngles.z / RightFingerAngle.z;
-        SliderR_Middle.value = -HandR.Middle.Proximal.localEulerAngles.z / RightFingerAngle.z;
-        SliderR_Ring.value = -HandR.Ring.Proximal.localEulerAngles.z / RightFingerAngle.z;
-        SliderR_Little.value = -HandR.Little.Proximal.localEulerAngles.z / RightFingerAngle.z;
+        SliderR_Index.value = HandR.Index.Proximal.localEulerAngles.z == 0 ? 0 : (HandR.Index.Proximal.localEulerAngles.z - 360) / RightFingerAngle.z;
+        SliderR_Middle.value = HandR.Middle.Proximal.localEulerAngles.z == 0 ? 0 : (HandR.Middle.Proximal.localEulerAngles.z - 360) / RightFingerAngle.z;
+        SliderR_Ring.value = HandR.Ring.Proximal.localEulerAngles.z == 0 ? 0 : (HandR.Ring.Proximal.localEulerAngles.z - 360) / RightFingerAngle.z;
+        SliderR_Little.value = HandR.Little.Proximal.localEulerAngles.z == 0 ? 0 : (HandR.Little.Proximal.localEulerAngles.z - 360) / RightFingerAngle.z;
         SliderR_Piece.value = rightYI / RightFingerAngleYI.y;
         SliderR_Other.value = rightYL / RightFingerAngleYL.y;
     }
