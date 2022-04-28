@@ -211,6 +211,8 @@ public class LoadFile : MonoBehaviour
             instance.Root.transform.parent = markerM;
             instance.ShowMeshes();
 
+            RuntimeSceneComponent.Selection.activeGameObject = markerM.gameObject;
+
             LoadCount++;
         }
 
@@ -409,6 +411,8 @@ public class LoadFile : MonoBehaviour
         anim.applyRootMotion = true;
 
         DandD.SetActive(false);
+
+        RuntimeSceneComponent.Selection.activeGameObject = markerR.gameObject;
     }
 
     public GameObject IMG(string path)
@@ -709,6 +713,8 @@ public class LoadFile : MonoBehaviour
         markerM.gameObject.AddComponent<SaveSceneTarget>().Path = TriLibPath;
         assetLoaderContext.RootGameObject.transform.position = new Vector3(0, -1, 0);
         assetLoaderContext.RootGameObject.transform.parent = markerM;
+
+        RuntimeSceneComponent.Selection.activeGameObject = markerM.gameObject;
 
         DandD.SetActive(false);
 

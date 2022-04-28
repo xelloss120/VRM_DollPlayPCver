@@ -79,12 +79,12 @@ public class LinkLight : MonoBehaviour
 
     public void AddPointLight(Vector3 position, float intensity, float range, Color color)
     {
-        var markerM = Instantiate(Marker).transform;
-        markerM.name = "PointLight";
-        markerM.position = position;
-        markerM.gameObject.AddComponent<SaveSceneTarget>().Path = "PointLight";
+        var marker = Instantiate(Marker).transform;
+        marker.name = "PointLight";
+        marker.position = position;
+        marker.gameObject.AddComponent<SaveSceneTarget>().Path = "PointLight";
 
-        var light = markerM.gameObject.AddComponent<Light>();
+        var light = marker.gameObject.AddComponent<Light>();
         light.type = LightType.Point;
         light.shadows = LightShadows.Soft;
         light.shadowNearPlane = 0.1f;
@@ -92,6 +92,8 @@ public class LinkLight : MonoBehaviour
         light.intensity = intensity;
         light.range = range;
         light.color = color;
+
+        BSC.Selection.activeGameObject = marker.gameObject;
     }
 
     public void SetDirectionalLight(float intensity, float r, float g, float b)
