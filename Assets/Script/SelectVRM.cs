@@ -38,13 +38,12 @@ public class SelectVRM : MonoBehaviour
                 if (Animator != null && Proxy != null && Marker != null)
                 {
                     IsActive = true;
+                    IsFullShape = !Proxy.enabled;
                 }
             }
 
             var springs = RootMarker.GetComponentsInChildren<VRMSpringBone>();
             if (springs.Length > 0) IsFullBone = !springs[0].enabled;
-
-            IsFullShape = !Proxy.enabled;
         }
 
         UI.SetActive(IsActive);
