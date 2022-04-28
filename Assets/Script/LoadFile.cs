@@ -106,14 +106,7 @@ public class LoadFile : MonoBehaviour
         PrimalBones.Add(HumanBodyBones.RightFoot);
 
 #if UNITY_EDITOR
-        VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\AoUni.vrm");
-        //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\old\AliciaSolid.vrm");
-        //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\AoUniJacket.vrm");
-        //IMG(@"D:\play\UnityProject\VRM_DollPlayPCprot\Photo\20191019072142.jpg");
-        //GLB(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\GLB\Cube.glb");
-        //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\Oroka2.vrm");
-        //VRM(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\VRM\AoLinz.vrm");
-        //TriLib(@"D:\play\Model\Reeva_v1.0.5\Models\Model_scooter.fbx");
+        VRM(@"D:\play\UnityProject\VRM_DollPlayPCverTestData\AoUni.vrm");
 #else
         TEST.SetActive(false);
 #endif
@@ -163,31 +156,27 @@ public class LoadFile : MonoBehaviour
 
     public void GLB_TEST()
     {
-        GLB(@"D:\play\UnityProject\VRM_DollPlayPCver\_exe\ExampleBackground.glb");
+        GLB(@"D:\play\UnityProject\VRM_DollPlayPCverTestData\sample.glb");
     }
 
     public void AB_TEST()
     {
-        AB(@"D:\play\UnityProject\VRM_DollPlay2018\_exe\ANI\crs_full.ab");
+        AB(@"D:\play\UnityProject\VRM_DollPlayPCverTestData\crs_full.ab");
     }
 
     public void TXT_TEST()
     {
-        //TXT(@"D:\play\UnityProject\VRM_DollPlayPCver\TEST\pose_humn.txt");
-        //TXT(@"D:\play\UnityProject\VRM_DollPlayPCver\TEST\pose_full.txt");
-        TXT(@"C:\Users\xello\Desktop\pose.txt");
+        TXT(@"D:\play\UnityProject\VRM_DollPlayPCverTestData\scene.txt");
     }
 
     public void PNG_TEST()
     {
-        //IMG(@"D:\play\UnityProject\VRM_DollPlayPCver\_exe\pose.png");
-        //IMG(@"D:\play\UnityProject\VRM_DollPlayPCver\TEST\pose.png");
-        IMG(@"C:\Users\xello\Desktop\pose.png");
+        IMG(@"D:\play\UnityProject\VRM_DollPlayPCverTestData\pose.png");
     }
 
     public void TriLib_TEST()
     {
-        TriLib(@"D:\play\Model\Reeva_v1.0.5\Models\Model_scooter.fbx");
+        TriLib(@"D:\play\UnityProject\VRM_DollPlayPCverTestData\Model_scooter.fbx");
     }
 
     void VRM(string path)
@@ -214,10 +203,11 @@ public class LoadFile : MonoBehaviour
         {
             var markerM = Instantiate(MarkerM).transform;
             markerM.name = "GLB_Root";
-            markerM.position = new Vector3(0, 0, 0);
+            markerM.position = new Vector3(0, -1, 0);
             markerM.gameObject.AddComponent<SaveSceneTarget>().Path = path;
 
             var instance = loader.Load();
+            instance.Root.transform.position = new Vector3(0, -1, 0);
             instance.Root.transform.parent = markerM;
             instance.ShowMeshes();
 
@@ -715,8 +705,9 @@ public class LoadFile : MonoBehaviour
 
         var markerM = Instantiate(MarkerM).transform;
         markerM.name = "TriLib_Root";
-        markerM.position = new Vector3(0, 0, 0);
+        markerM.position = new Vector3(0, -1, 0);
         markerM.gameObject.AddComponent<SaveSceneTarget>().Path = TriLibPath;
+        assetLoaderContext.RootGameObject.transform.position = new Vector3(0, -1, 0);
         assetLoaderContext.RootGameObject.transform.parent = markerM;
 
         DandD.SetActive(false);
