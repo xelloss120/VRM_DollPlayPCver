@@ -9,23 +9,21 @@ public class Photo : MonoBehaviour
     [SerializeField] Camera Camera;
     [SerializeField] Toggle JPG;
     [SerializeField] Toggle PNG;
+    [SerializeField] Toggle RGBA32;
+    [SerializeField] Toggle RGBAFloat;
     [SerializeField] AudioSource SE;
     [SerializeField] LoadFile LoadFile;
 
     public void Get()
     {
-        RenderTexture RenTex = Camera.targetTexture;
-        RenderTexture.active = RenTex;
-        Texture2D tex = new Texture2D(RenTex.width, RenTex.height, TextureFormat.RGBAFloat, false);
-        tex.ReadPixels(new Rect(0, 0, RenTex.width, RenTex.height), 0, 0);
-        var color = tex.GetPixels();
-        for (int i = 0; i < color.Length; i++)
-        {
-            color[i].r = Mathf.LinearToGammaSpace(color[i].r);
-            color[i].g = Mathf.LinearToGammaSpace(color[i].g);
-            color[i].b = Mathf.LinearToGammaSpace(color[i].b);
-        }
-        tex.SetPixels(color);
+        var rt = Camera.targetTexture;
+        var tf = RGBA32.isOn ? TextureFormat.RGBA32 : TextureFormat.RGBAFloat;
+        var tex = new Texture2D(rt.width, rt.height, tf, false);
+        RenderTexture.active = rt;
+        tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+        var pixels = tex.GetPixels();
+        for (int i = 0; i < pixels.Length; i++) pixels[i] = pixels[i].gamma;
+        tex.SetPixels(pixels);
         tex.Apply();
 
         var dt = DateTime.Now;
