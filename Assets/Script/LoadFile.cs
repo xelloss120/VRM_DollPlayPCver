@@ -463,40 +463,34 @@ public class LoadFile : MonoBehaviour
                 // ブレンドシェイプ
                 {
                     var index = 512 * 2;
-                    if (!SelectVRM.IsFullShape)
+                    var values = new Dictionary<BlendShapeKey, float>();
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral), ColorToFloat(color[index + 0]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.A), ColorToFloat(color[index + 1]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.I), ColorToFloat(color[index + 2]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.U), ColorToFloat(color[index + 3]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.E), ColorToFloat(color[index + 4]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), ColorToFloat(color[index + 5]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink), ColorToFloat(color[index + 6]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy), ColorToFloat(color[index + 7]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry), ColorToFloat(color[index + 8]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow), ColorToFloat(color[index + 9]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun), ColorToFloat(color[index + 10]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp), ColorToFloat(color[index + 11]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown), ColorToFloat(color[index + 12]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft), ColorToFloat(color[index + 13]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight), ColorToFloat(color[index + 14]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), ColorToFloat(color[index + 15]));
+                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), ColorToFloat(color[index + 16]));
+                    SelectVRM.Proxy.SetValues(values);
+                    var ii = 17;
+                    var skinneds = SelectVRM.RootMarker.GetComponentsInChildren<SkinnedMeshRenderer>();
+                    foreach (var skinned in skinneds)
                     {
-                        var values = new Dictionary<BlendShapeKey, float>();
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral), ColorToFloat(color[index + 0]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.A), ColorToFloat(color[index + 1]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.I), ColorToFloat(color[index + 2]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.U), ColorToFloat(color[index + 3]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.E), ColorToFloat(color[index + 4]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), ColorToFloat(color[index + 5]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink), ColorToFloat(color[index + 6]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy), ColorToFloat(color[index + 7]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry), ColorToFloat(color[index + 8]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow), ColorToFloat(color[index + 9]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun), ColorToFloat(color[index + 10]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp), ColorToFloat(color[index + 11]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown), ColorToFloat(color[index + 12]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft), ColorToFloat(color[index + 13]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight), ColorToFloat(color[index + 14]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), ColorToFloat(color[index + 15]));
-                        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), ColorToFloat(color[index + 16]));
-                        SelectVRM.Proxy.SetValues(values);
-                    }
-                    else
-                    {
-                        var ii = 64;
-                        var skinneds = SelectVRM.RootMarker.GetComponentsInChildren<SkinnedMeshRenderer>();
-                        foreach (var skinned in skinneds)
+                        for (int i = 0; i < skinned.sharedMesh.blendShapeCount; i++)
                         {
-                            for (int i = 0; i < skinned.sharedMesh.blendShapeCount; i++)
-                            {
-                                var value = ColorToFloat(color[index + ii]);
-                                skinned.SetBlendShapeWeight(i, value);
-                                ii++;
-                            }
+                            var value = ColorToFloat(color[index + ii]);
+                            skinned.SetBlendShapeWeight(i, value);
+                            ii++;
                         }
                     }
                     LinkBlendShape.GetBlendShape();
@@ -672,16 +666,101 @@ public class LoadFile : MonoBehaviour
             return;
         }
 
+        // ポーズテキストは(0,0,0)の場合に値を設定しない（指など一部だけの適用を想定）
         string[] pose = txt.Replace("\n", ",").Split(',');
 
         for (int i = 0; i < SelectVRM.Marker.List.Count; i++)
         {
-            // (0,0,0)は角度を設定しないように（指など一部だけの適用を想定）
-            var vec3 = GetVector3(pose, i * 3);
             var angle = SelectVRM.Marker.List[i].localEulerAngles;
-            angle = vec3 != Vector3.zero ? vec3 : angle;
-            SelectVRM.Marker.List[i].localEulerAngles = angle;
+            if (!SelectVRM.IsFullBone)
+            {
+                var link = SelectVRM.Marker.List[i].GetComponent<LinkRotation>();
+                if (link.IsPrimal)
+                {
+                    var vec3 = GetVector3(pose, i * 3);
+                    angle = vec3 != Vector3.zero ? vec3 : angle;
+                    SelectVRM.Marker.List[i].localEulerAngles = angle;
+                }
+            }
+            else
+            {
+                var vec3 = GetVector3(pose, i * 3);
+                angle = vec3 != Vector3.zero ? vec3 : angle;
+                SelectVRM.Marker.List[i].localEulerAngles = angle;
+            }
         }
+
+        var fingerIndex = txt.IndexOf("指") + "指\n".Length;
+        var fingerTxt = txt.Substring(fingerIndex);
+        string[] finger = fingerTxt.Replace("\n", ",").Split(',');
+
+        var start = (int)HumanBodyBones.LeftThumbProximal;
+        var end = (int)HumanBodyBones.RightLittleDistal;
+        for (var i = 0; i <= end - start; i++)
+        {
+            var vec3 = GetVector3(finger, i * 3);
+            var angle = SelectVRM.Marker.List[i].localEulerAngles;
+            var tf = SelectVRM.Animator.GetBoneTransform((HumanBodyBones)i + start);
+            tf.localEulerAngles = vec3 != Vector3.zero ? vec3 : angle;
+        }
+        LinkHand.GetFingerAngle();
+
+        var shapeIndex = txt.IndexOf("ブレンドシェイプ") + "ブレンドシェイプ\n".Length;
+        var shapeTxt = txt.Substring(shapeIndex);
+        string[] shape = shapeTxt.Replace("\n", ",").Split(',');
+
+        var values = new Dictionary<BlendShapeKey, float>();
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral), float.Parse(shape[0]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.A), float.Parse(shape[1]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.I), float.Parse(shape[2]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.U), float.Parse(shape[3]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.E), float.Parse(shape[4]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), float.Parse(shape[5]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink), float.Parse(shape[6]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy), float.Parse(shape[7]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry), float.Parse(shape[8]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow), float.Parse(shape[9]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun), float.Parse(shape[10]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp), float.Parse(shape[11]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown), float.Parse(shape[12]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft), float.Parse(shape[13]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight), float.Parse(shape[14]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), float.Parse(shape[15]));
+        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), float.Parse(shape[16]));
+        SelectVRM.Proxy.SetValues(values);
+        var ii = 17;
+        var skinneds = SelectVRM.RootMarker.GetComponentsInChildren<SkinnedMeshRenderer>();
+        foreach (var skinned in skinneds)
+        {
+            for (int i = 0; i < skinned.sharedMesh.blendShapeCount; i++)
+            {
+                skinned.SetBlendShapeWeight(i, float.Parse(shape[ii]));
+                ii++;
+            }
+        }
+        LinkBlendShape.GetBlendShape();
+
+        var IKIndex = txt.IndexOf("IK") + "IK\n".Length;
+        var IKTxt = txt.Substring(IKIndex);
+        string[] IK = IKTxt.Replace("\n", ",").Split(',');
+
+        var count = SelectVRM.Marker.List.Count;
+        SelectVRM.Marker.List[count - 10].localPosition = GetVector3(IK, 0);
+        SelectVRM.Marker.List[count - 9].localPosition = GetVector3(IK, 3);
+        SelectVRM.Marker.List[count - 8].localPosition = GetVector3(IK, 6);
+        SelectVRM.Marker.List[count - 7].localPosition = GetVector3(IK, 9);
+        SelectVRM.Marker.List[count - 6].localPosition = GetVector3(IK, 12);
+        SelectVRM.Marker.List[count - 5].localPosition = GetVector3(IK, 15);
+        SelectVRM.Marker.List[count - 10].localEulerAngles = GetVector3(IK, 18);
+        SelectVRM.Marker.List[count - 9].localEulerAngles = GetVector3(IK, 21);
+        SelectVRM.Marker.List[count - 8].localEulerAngles = GetVector3(IK, 24);
+        SelectVRM.Marker.List[count - 7].localEulerAngles = GetVector3(IK, 27);
+        SelectVRM.Marker.List[count - 6].localEulerAngles = GetVector3(IK, 30);
+        SelectVRM.Marker.List[count - 5].localEulerAngles = GetVector3(IK, 33);
+        SelectVRM.Marker.List[count - 4].localEulerAngles = GetVector3(IK, 36);
+        SelectVRM.Marker.List[count - 3].localEulerAngles = GetVector3(IK, 39);
+        SelectVRM.Marker.List[count - 2].localEulerAngles = GetVector3(IK, 42);
+        SelectVRM.Marker.List[count - 1].localEulerAngles = GetVector3(IK, 45);
     }
 
     Vector3 GetVector3(string[] pose, int index)
