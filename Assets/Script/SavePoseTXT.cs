@@ -43,7 +43,7 @@ public class SavePoseTXT : MonoBehaviour
             }
         }
 
-        pose += "指" + "\n";
+        pose += "Finger" + "\n";
         var start = (int)HumanBodyBones.LeftThumbProximal;
         var end = (int)HumanBodyBones.RightLittleDistal;
         for (var i = start; i <= end; i++)
@@ -53,24 +53,13 @@ public class SavePoseTXT : MonoBehaviour
             pose += GetAngleString(angle);
         }
 
-        pose += "ブレンドシェイプ" + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.A)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.I)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.U)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.E)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L)) + "\n";
-        pose += SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R)) + "\n";
+        pose += "BlendShapeVRM" + "\n";
+        var clips = SelectVRM.Proxy.BlendShapeAvatar.Clips;
+        for (int i = 0; i < clips.Count; i++)
+        {
+            pose += SelectVRM.Proxy.GetValue(clips[i].Key) + "\n";
+        }
+        pose += "BlendShapeFull" + "\n";
         var skinneds = SelectVRM.RootMarker.GetComponentsInChildren<SkinnedMeshRenderer>();
         foreach (var skinned in skinneds)
         {

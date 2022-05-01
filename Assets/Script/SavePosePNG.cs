@@ -86,24 +86,12 @@ public class SavePosePNG : MonoBehaviour
 
         // ブレンドシェイプ
         index = 512 * 2;
-        color[index + 0] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral)));
-        color[index + 1] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.A)));
-        color[index + 2] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.I)));
-        color[index + 3] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.U)));
-        color[index + 4] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.E)));
-        color[index + 5] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.O)));
-        color[index + 6] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink)));
-        color[index + 7] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy)));
-        color[index + 8] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry)));
-        color[index + 9] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow)));
-        color[index + 10] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun)));
-        color[index + 11] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp)));
-        color[index + 12] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown)));
-        color[index + 13] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft)));
-        color[index + 14] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight)));
-        color[index + 15] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L)));
-        color[index + 16] = GetColor(SelectVRM.Proxy.GetValue(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R)));
-        var ii = 17;
+        var clips = SelectVRM.Proxy.BlendShapeAvatar.Clips;
+        for (int i = 0; i < clips.Count; i++)
+        {
+            color[index + i] = GetColor(SelectVRM.Proxy.GetValue(clips[i].Key));
+        }
+        var ii = 512;
         var skinneds = SelectVRM.RootMarker.GetComponentsInChildren<SkinnedMeshRenderer>();
         foreach (var skinned in skinneds)
         {

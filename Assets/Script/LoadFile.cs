@@ -466,26 +466,14 @@ public class LoadFile : MonoBehaviour
                 // ブレンドシェイプ
                 {
                     var index = 512 * 2;
+                    var clips = SelectVRM.Proxy.BlendShapeAvatar.Clips;
                     var values = new Dictionary<BlendShapeKey, float>();
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral), ColorToFloat(color[index + 0]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.A), ColorToFloat(color[index + 1]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.I), ColorToFloat(color[index + 2]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.U), ColorToFloat(color[index + 3]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.E), ColorToFloat(color[index + 4]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), ColorToFloat(color[index + 5]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink), ColorToFloat(color[index + 6]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy), ColorToFloat(color[index + 7]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry), ColorToFloat(color[index + 8]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow), ColorToFloat(color[index + 9]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun), ColorToFloat(color[index + 10]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp), ColorToFloat(color[index + 11]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown), ColorToFloat(color[index + 12]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft), ColorToFloat(color[index + 13]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight), ColorToFloat(color[index + 14]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), ColorToFloat(color[index + 15]));
-                    values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), ColorToFloat(color[index + 16]));
+                    for (int i = 0; i < clips.Count; i++)
+                    {
+                        values.Add(clips[i].Key, ColorToFloat(color[index + i]));
+                    }
                     SelectVRM.Proxy.SetValues(values);
-                    var ii = 17;
+                    var ii = 512;
                     var skinneds = SelectVRM.RootMarker.GetComponentsInChildren<SkinnedMeshRenderer>();
                     foreach (var skinned in skinneds)
                     {
@@ -693,7 +681,7 @@ public class LoadFile : MonoBehaviour
             }
         }
 
-        var fingerIndex = txt.IndexOf("指") + "指\n".Length;
+        var fingerIndex = txt.IndexOf("Finger") + "Finger\n".Length;
         var fingerTxt = txt.Substring(fingerIndex);
         string[] finger = fingerTxt.Replace("\n", ",").Split(',');
 
@@ -708,36 +696,29 @@ public class LoadFile : MonoBehaviour
         }
         LinkHand.GetFingerAngle();
 
-        var shapeIndex = txt.IndexOf("ブレンドシェイプ") + "ブレンドシェイプ\n".Length;
-        var shapeTxt = txt.Substring(shapeIndex);
-        string[] shape = shapeTxt.Replace("\n", ",").Split(',');
+        var shapeVRM_Index = txt.IndexOf("BlendShapeVRM") + "BlendShapeVRM\n".Length;
+        var shapeVRM_Txt = txt.Substring(shapeVRM_Index);
+        string[] shapeVRM = shapeVRM_Txt.Replace("\n", ",").Split(',');
 
+        var clips = SelectVRM.Proxy.BlendShapeAvatar.Clips;
         var values = new Dictionary<BlendShapeKey, float>();
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Neutral), float.Parse(shape[0]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.A), float.Parse(shape[1]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.I), float.Parse(shape[2]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.U), float.Parse(shape[3]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.E), float.Parse(shape[4]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.O), float.Parse(shape[5]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink), float.Parse(shape[6]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Joy), float.Parse(shape[7]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Angry), float.Parse(shape[8]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Sorrow), float.Parse(shape[9]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Fun), float.Parse(shape[10]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookUp), float.Parse(shape[11]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookDown), float.Parse(shape[12]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookLeft), float.Parse(shape[13]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.LookRight), float.Parse(shape[14]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_L), float.Parse(shape[15]));
-        values.Add(BlendShapeKey.CreateFromPreset(BlendShapePreset.Blink_R), float.Parse(shape[16]));
+        for (int i = 0; i < clips.Count; i++)
+        {
+            values.Add(clips[i].Key, float.Parse(shapeVRM[i]));
+        }
         SelectVRM.Proxy.SetValues(values);
-        var ii = 17;
+
+        var shapeFull_Index = txt.IndexOf("BlendShapeFull") + "BlendShapeFull\n".Length;
+        var shapeFull_Txt = txt.Substring(shapeFull_Index);
+        string[] shapeFull = shapeFull_Txt.Replace("\n", ",").Split(',');
+
+        var ii = 0;
         var skinneds = SelectVRM.RootMarker.GetComponentsInChildren<SkinnedMeshRenderer>();
         foreach (var skinned in skinneds)
         {
             for (int i = 0; i < skinned.sharedMesh.blendShapeCount; i++)
             {
-                skinned.SetBlendShapeWeight(i, float.Parse(shape[ii]));
+                skinned.SetBlendShapeWeight(i, float.Parse(shapeFull[ii]));
                 ii++;
             }
         }
