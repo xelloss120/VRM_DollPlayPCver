@@ -16,7 +16,8 @@ public class SelectTool : MonoBehaviour
             return;
         }
 
-        if (active.name == "TriLib_Root" ||
+        if (active.name == "Root" ||
+            active.name == "TriLib_Root" ||
             active.name == "GLB_Root" ||
             active.name == "VRIK_Target")
         {

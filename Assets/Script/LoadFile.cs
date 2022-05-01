@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UniGLTF;
 using VRM;
 using VRMLoader;
@@ -30,6 +31,7 @@ public class LoadFile : MonoBehaviour
     [SerializeField] GameObject TEST;
     [SerializeField] LinkBlendShape LinkBlendShape;
     [SerializeField] LinkHand LinkHand;
+    [SerializeField] Toggle Move;
 
     List<HumanBodyBones> PrimalBones;
     AssetBundle AssetBundle;
@@ -413,6 +415,7 @@ public class LoadFile : MonoBehaviour
         DandD.SetActive(false);
 
         RuntimeSceneComponent.Selection.activeGameObject = markerR.gameObject;
+        Move.isOn = true;
     }
 
     public GameObject IMG(string path)
