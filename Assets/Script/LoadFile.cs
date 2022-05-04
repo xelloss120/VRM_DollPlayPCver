@@ -185,8 +185,7 @@ public class LoadFile : MonoBehaviour
     {
         var data = new AutoGltfFileParser(path).Parse();
         var vrm = new VRMData(data);
-        IMaterialDescriptorGenerator materialGen = default;
-        using (var loader = new VRMImporterContext(vrm, materialGenerator: materialGen))
+        using (var loader = new VRMImporterContext(vrm))
         {
             var meta = loader.ReadMeta(true);
             var modal = Instantiate(LoadConfirmModal, Canvas.transform);
@@ -200,8 +199,7 @@ public class LoadFile : MonoBehaviour
     void GLB(string path)
     {
         var data = new AutoGltfFileParser(path).Parse();
-        IMaterialDescriptorGenerator materialGen = default;
-        using (var loader = new ImporterContext(data, materialGenerator: materialGen))
+        using (var loader = new ImporterContext(data))
         {
             var markerM = Instantiate(MarkerM).transform;
             markerM.name = "GLB_Root";
