@@ -10,6 +10,7 @@ public class LinkLight : MonoBehaviour
     [SerializeField] Slider SliderR;
     [SerializeField] Slider SliderG;
     [SerializeField] Slider SliderB;
+    [SerializeField] Slider SliderAmb;
 
     [SerializeField] RuntimeSceneComponent BSC;
     [SerializeField] GameObject UI;
@@ -33,6 +34,9 @@ public class LinkLight : MonoBehaviour
         Light.color = color;
 
         Light.intensity = Slider.value;
+
+        // 環境光源強度
+        RenderSettings.ambientIntensity = SliderAmb.value;
 
         // 選択状態判定で処理分岐
         var active = BSC.Editor.Selection.activeGameObject;
